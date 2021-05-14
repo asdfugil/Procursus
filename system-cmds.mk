@@ -37,7 +37,7 @@ system-cmds: system-cmds-setup libxcrypt openpam
 	cd $(BUILD_WORK)/system-cmds && $(CC) $(CFLAGS) -o sysctl sysctl.tproj/sysctl.c $(LDFLAGS)
 	cd $(BUILD_WORK)/system-cmds && $(CC) $(CFLAGS) -o arch arch.tproj/*.c $(LDFLAGS) -framework CoreFoundation -framework Foundation -lobjc
 	cd $(BUILD_WORK)/system-cmds; \
-	for tproj in ac accton dynamic_pager getconf getty hostinfo iostat login mkfile pwd_mkdb reboot sync vifs vipw zdump zic nologin; do \
+	for tproj in ac accton dynamic_pager getconf getty hostinfo iostat login mkfile reboot sync vifs vipw zdump zic nologin; do \
 		CFLAGS=; \
 		EXTRA=; \
 		case $$tproj in \
@@ -48,6 +48,8 @@ system-cmds: system-cmds-setup libxcrypt openpam
 		echo "$$tproj" ; \
 		$(CC) $(CFLAGS) -I$(BUILD_WORK)/system-cmds/include -o $$tproj $$tproj.tproj/*.c $$EXTRA -D'__FBSDID(x)=' $$CFLAGS $(LDFLAGS) -framework CoreFoundation -framework IOKit $$LDFLAGS; \
 	done
+	echo -e '#!/bin/sh\n echo "This is a dummy"' > $(BUILD_WORK)/system-cmds/pwd_mkdb
+	chmod 755 $(BUILD_WORK)/system-cmds/pwd_mkdb
 	mkdir -p $(BUILD_STAGE)/system-cmds/$(MEMO_PREFIX){/etc/pam.d,/bin,/sbin,$(MEMO_SUB_PREFIX)/bin,$(MEMO_SUB_PREFIX)/sbin,$(MEMO_SUB_PREFIX)/share/man/man{1,5,8}}
 	cp -a $(BUILD_WORK)/system-cmds/{reboot,nologin} $(BUILD_STAGE)/system-cmds$(MEMO_PREFIX)$(MEMO_SUB_PREFIX)/sbin
 	cp -a $(BUILD_WORK)/system-cmds/pagesize.tproj/pagesize.sh $(BUILD_STAGE)/system-cmds$(MEMO_PREFIX)$(MEMO_SUB_PREFIX)/bin/pagesize

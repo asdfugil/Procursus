@@ -3,7 +3,7 @@ $(error Use the main Makefile)
 endif
 
 ifeq (,$(findstring darwin,$(MEMO_TARGET)))
-STRAPPROJECTS        += diskdev-cmds
+SUBPROJECTS        += diskdev-cmds
 else # ($(MEMO_TARGET),darwin-\*)
 SUBPROJECTS          += diskdev-cmds
 endif # ($(MEMO_TARGET),darwin-\*)
