@@ -14,7 +14,7 @@ openpam-setup: setup
 	$(call EXTRACT_TAR,openpam-$(OPENPAM_VERSION).tar.gz,openpam-$(OPENPAM_VERSION),openpam)
 	$(call DO_PATCH,openpam,openpam,-p0)
 ifneq (,$(findstring appletvos,$(MEMO_TARGET)))
-	wget -q -nc -O $(BUILD_BASE)/usr/include/membershipPriv.h https://opensource.apple.com/source/Libinfo/Libinfo-222.3.3/membership.subproj/membershipPriv.h
+	wget -q -c -O $(BUILD_BASE)/usr/include/membershipPriv.h https://opensource.apple.com/source/Libinfo/Libinfo-222.3.3/membership.subproj/membershipPriv.h
 endif
 	# The below line is only if you need to debug PAM with detailed syslogs.
 	# $(SED) -i -e 's/openpam_debug = 0/openpam_debug = 1/' -e 's/priority = LOG_DEBUG/priority = LOG_ERR/' $(BUILD_WORK)/openpam/lib/libpam/openpam_log.c
