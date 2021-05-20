@@ -3,11 +3,11 @@ $(error Use the main Makefile)
 endif
 
 SUBPROJECTS    += x264
-X264_SOVERSION := 161
-X264_VERSION   := 0.$(X264_SOVERSION).3027+git4121277
+X264_SOVERSION := 163
+X264_VERSION   := 0.$(X264_SOVERSION).3027+gitb684ebe
 DEB_X264_V     ?= $(X264_VERSION)
 
-X264_COMMIT    := 4121277b40a667665d4eea1726aefdc55d12d110
+X264_COMMIT    := b684ebe04a6f80f8207a57940a1fa00e25274f81
 
 x264-setup: setup
 	wget -q -nc -P $(BUILD_SOURCE) https://code.videolan.org/videolan/x264/-/archive/master/x264-$(X264_COMMIT).tar.gz
