@@ -2,7 +2,7 @@ ifneq ($(PROCURSUS),1)
 $(error Use the main Makefile)
 endif
 
-SUBPROJECTS         += libdvdnav
+SUBPROJECTS       += libdvdnav
 LIBDVDNAV_VERSION := 6.1.0
 DEB_LIBDVDNAV_V   ?= $(LIBDVDNAV_VERSION)
 
@@ -11,17 +11,17 @@ libdvdnav-setup: setup
 	$(call EXTRACT_TAR,libdvdnav-$(LIBDVDNAV_VERSION).tar.bz2,libdvdnav-$(LIBDVDNAV_VERSION),libdvdnav)
 
 ifneq ($(wildcard $(BUILD_WORK)/libdvdnav/.build_complete),)
-libdvdnav: libdvdcss libdvdread
+libdvdnav:
 	@echo "Using previously built libdvdnav."
 else
-libdvdnav: libdvdnav-setup
+libdvdnav: libdvdnav-setup libdvdread
 	cd $(BUILD_WORK)/libdvdnav && ./configure -C \
 		$(DEFAULT_CONFIGURE_FLAGS)
 	+$(MAKE) -C $(BUILD_WORK)/libdvdnav
 	+$(MAKE) -C $(BUILD_WORK)/libdvdnav install \
 		DESTDIR=$(BUILD_STAGE)/libdvdnav
 	+$(MAKE) -C $(BUILD_WORK)/libdvdnav install \
-		DESTDIR=$(BUILD_WORK)
+		DESTDIR=$(BUILD_BASE)
 
 	touch $(BUILD_WORK)/libdvdnav/.build_complete
 endif
