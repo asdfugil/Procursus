@@ -11,18 +11,32 @@ vlc-setup: setup
 	$(call EXTRACT_TAR,vlc-$(VLC_VERSION).tar.xz,vlc-$(VLC_VERSION),vlc)
 	#$(call DO_PATCH,vlc,vlc,-p1)
 
+ifneq (,$(findstring darwin,$(MEMO_TARGET)))
+VLC_EXTRA_DEPS := libbluray libaacs libbluray
+VLC_OPTS := --enable-libbluray \
+	--enable-osx-notifications \
+	--enable-macosx
+else
+VLC_EXTRA_DEPS :=
+VLC_OPTS := --disable-osx-notifications \
+	--disable-macosx \
+	--enable-minimal-macosx \
+	--disable-bluray
+endif
 ifneq ($(wildcard $(BUILD_WORK)/vlc/.build_complete),)
 vlc:
 	@echo "Using previously built vlc."
 else
-vlc: aom dav1d ffmpeg fontconfig freetype frei0r gnutls lame libarchive libass libdvdcss libdvdnav libdvdread libsoxr libssh libvidstab libvorbis libvpx libopencore-amr openjpeg libopus libx11 libxft lua5.4 rav1e rtmpdump rubberband sdl2 libsnappy libspeex libsrt tesseract libtheora libwebp x264 x265 libxvidcore xz vlc-setup
+vlc: aom dav1d ffmpeg fontconfig freetype frei0r gnutls lame libarchive libass libdvdcss libdvdnav libdvdread libpng16 libsoxr libssh libvidstab libvorbis libvpx libopencore-amr openjpeg libopus libx11 libxft libxcb lua5.4 rav1e rtmpdump rubberband sdl2 libsnappy libspeex libsrt tesseract libtheora libwebp x264 x265 libxvidcore xz  $(VLC_EXTRA_DEPS) vlc-setup
 	cd $(BUILD_WORK)/vlc && LDFLASS=-lCoreFoundation ./configure -C \
 		$(DEFAULT_CONFIGURE_FLAGS) \
 		--disable-qt \
-		--disable-bluray \
+		--disable-sparkle \
+		--disable-update-check \
 		--disable-vcd \
 		--disable-dbus \
 		--enable-archive \
+		--enable-png \
 		--enable-dvdnav \
 		--enable-dvdread \
 		--enable-static \
@@ -59,7 +73,7 @@ vlc: aom dav1d ffmpeg fontconfig freetype frei0r gnutls lame libarchive libass l
 		--disable-sndio \
 		--disable-a52 \
 		--disable-kate \
-		--disable-macosx
+		$(VLC_OPTS)
 	+$(MAKE) -C $(BUILD_WORK)/vlc
 	+$(MAKE) -C $(BUILD_WORK)/vlc install \
 		DESTDIR=$(BUILD_STAGE)/vlc
