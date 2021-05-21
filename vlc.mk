@@ -2,7 +2,7 @@ ifneq ($(PROCURSUS),1)
 $(error Use the main Makefile)
 endif
 
-SUBPROJECTS   += vlc
+SUBPROJECTS += vlc
 VLC_VERSION := 3.0.14
 DEB_VLC_V   ?= $(VLC_VERSION)
 
