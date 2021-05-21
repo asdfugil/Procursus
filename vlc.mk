@@ -23,12 +23,24 @@ VLC_OPTS := --disable-osx-notifications \
 	--enable-minimal-macosx \
 	--disable-bluray
 endif
+
+ifeq (,$(findstring arm,$(MEMO_TARGET)))
+VLC_OPTS += --enable-mmx \
+	--enable-sse \
+	--disable-neon \
+	--disable-arm64
+else
+VLC_OPTS += --disable-mmx \
+        --disable-sse \
+	--enable-neon \
+	--enable-arm64
+endif
 ifneq ($(wildcard $(BUILD_WORK)/vlc/.build_complete),)
 vlc:
 	@echo "Using previously built vlc."
 else
 vlc: aom dav1d ffmpeg fontconfig freetype frei0r gnutls lame libarchive libass libdvdcss libdvdnav libdvdread libpng16 libsoxr libssh libvidstab libvorbis libvpx libopencore-amr openjpeg libopus libx11 libxft libxcb lua5.4 rav1e rtmpdump rubberband sdl2 libsnappy libspeex libsrt tesseract libtheora libwebp x264 x265 libxvidcore xz  $(VLC_EXTRA_DEPS) vlc-setup
-	cd $(BUILD_WORK)/vlc && LDFLASS=-lCoreFoundation ./configure -C \
+	cd $(BUILD_WORK)/vlc && LDFLAGS="-framework CoreFoundation" ./configure -C \
 		$(DEFAULT_CONFIGURE_FLAGS) \
 		--disable-qt \
 		--disable-sparkle \
@@ -47,10 +59,6 @@ vlc: aom dav1d ffmpeg fontconfig freetype frei0r gnutls lame libarchive libass l
 		--enable-x265 \
 		--with-x \
 		--with-libintl-prefix=$(BUILD_BASE) \
-		--enable-neon \
-		--disable-mmx \
-		--disable-sse \
-		--enable-arm64 \
 		--disable-altivec \
 		--disable-live555 \
 		--disable-dc1394 \
