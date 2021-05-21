@@ -16,7 +16,7 @@ libvpx:
 else
 libvpx: libvpx-setup
 	cd $(BUILD_WORK)/libvpx && ./configure \
-		$(DEFAULT_CONFIGURE_FLAGS) \
+		--prefix=$(MEMO_PREFIX)$(MEMO_SUB_PREFIX) \
 		--target=arm64-darwin-gcc \
 		--disable-dependency-tracking \
 		--enable-shared \
@@ -33,7 +33,6 @@ libvpx: libvpx-setup
 		DESTDIR=$(BUILD_STAGE)/libvpx
 	+$(MAKE) -C $(BUILD_WORK)/libvpx install \
 		DESTDIR=$(BUILD_BASE)
-
 	for bin in $(BUILD_STAGE)/libvpx/$(MEMO_PREFIX)$(MEMO_SUB_PREFIX)/bin/*; do \
 		$(I_N_T) -change libvpx.6.dylib /$(MEMO_PREFIX)$(MEMO_SUB_PREFIX)/lib/libvpx.6.dylib $$bin; \
 	done
