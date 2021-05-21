@@ -59,7 +59,7 @@ vlc: aom dav1d ffmpeg fontconfig freetype frei0r gnutls lame libarchive libass l
 		--disable-sndio \
 		--disable-a52 \
 		--disable-kate \
-		--enable-macosx
+		--disable-macosx
 	+$(MAKE) -C $(BUILD_WORK)/vlc
 	+$(MAKE) -C $(BUILD_WORK)/vlc install \
 		DESTDIR=$(BUILD_STAGE)/vlc
