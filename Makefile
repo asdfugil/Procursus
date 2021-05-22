@@ -308,9 +308,9 @@ OPTIMIZATION_FLAGS ?= -Os
 endif
 
 ifeq ($(DEBUG),1)
-CFLAGS              := -g -O0
-CPPFLAGS            := -g -O0
-LDFLAGS             := -g -O0
+CFLAGS              := -g -O0 -v
+CPPFLAGS            := -g -O0 -v
+LDFLAGS             := -g -O0 -v
 else
 CFLAGS              := $(OPTIMIZATION_FLAGS)
 CPPFLAGS            :=
