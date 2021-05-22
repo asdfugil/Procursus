@@ -9,7 +9,7 @@ DEB_VLC_V   ?= $(VLC_VERSION)
 vlc-setup: setup
 	wget -q -nc -P$(BUILD_SOURCE) https://download.videolan.org/vlc/$(VLC_VERSION)/vlc-$(VLC_VERSION).tar.xz
 	$(call EXTRACT_TAR,vlc-$(VLC_VERSION).tar.xz,vlc-$(VLC_VERSION),vlc)
-	#$(call DO_PATCH,vlc,vlc,-p1)
+	$(call DO_PATCH,vlc,vlc,-p1)
 
 ifneq (,$(findstring darwin,$(MEMO_TARGET)))
 VLC_EXTRA_DEPS := libbluray libaacs libbluray
@@ -20,7 +20,7 @@ else
 VLC_EXTRA_DEPS :=
 VLC_OPTS := --disable-osx-notifications \
 	--disable-macosx \
-	--enable-minimal-macosx \
+	--disable-minimal-macosx \
 	--disable-bluray
 endif
 
@@ -32,7 +32,7 @@ VLC_OPTS += --enable-mmx \
 else
 VLC_OPTS += --disable-mmx \
         --disable-sse \
-	--enable-neon \
+	--disable-neon \
 	--enable-arm64
 endif
 ifneq ($(wildcard $(BUILD_WORK)/vlc/.build_complete),)
@@ -40,7 +40,7 @@ vlc:
 	@echo "Using previously built vlc."
 else
 vlc: aom dav1d ffmpeg fontconfig freetype frei0r gnutls lame libarchive libass libdvdcss libdvdnav libdvdread libpng16 libsoxr libssh libvidstab libvorbis libvpx libopencore-amr openjpeg libopus libx11 libxft libxcb lua5.4 rav1e rtmpdump rubberband sdl2 libsnappy libspeex libsrt tesseract libtheora libwebp x264 x265 libxvidcore xz  $(VLC_EXTRA_DEPS) vlc-setup
-	cd $(BUILD_WORK)/vlc && LDFLAGS="-framework CoreFoundation" ./configure -C \
+	cd $(BUILD_WORK)/vlc && ./bootstrap && LDFLAGS="-framework CoreFoundation -framework CFNetwork" ./configure -C \
 		$(DEFAULT_CONFIGURE_FLAGS) \
 		--disable-qt \
 		--disable-sparkle \
