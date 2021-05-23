@@ -11,8 +11,12 @@ vlc-setup: setup
 	$(call EXTRACT_TAR,vlc-$(VLC_VERSION).tar.xz,vlc-$(VLC_VERSION),vlc)
 ifeq (,$(findstring darwin,$(MEMO_TARGET)))
 	$(SED) -i 's@libscreen_plugin_la_SOURCES += access/screen/mac.c@@g' $(BUILD_WORK)/vlc/modules/access/Makefile.am
+	$(SED) -i 's/-framework,ApplicationServices//g' $(BUILD_WORK)/vlc/modules/access/Makefile.am
+	$(SED) -i 's@\tgui/macosx/VLCCoreDialogProvider.h gui/macosx/VLCCoreDialogProvider.m \\@\\@g' $(BUILD_WORK)/vlc/modules/gui/macosx/Makefile.am
 endif
 	$(call DO_PATCH,vlc,vlc,-p1)
+	$(SED) -i 's@include <OpenGL/@include <GL/@g' $(BUILD_WORK)/vlc/modules/visualization/glspectrum.c
+	$(SED) -i 's/-framework,OpenGL,//g' $(BUILD_WORK)/vlc/modules/access/Makefile.am
 
 ifneq (,$(findstring darwin,$(MEMO_TARGET)))
 VLC_EXTRA_DEPS := libbluray libaacs libbluray

@@ -312,7 +312,7 @@ BUILD_TOOLS    := $(shell dirname $(realpath $(firstword $(MAKEFILE_LIST))))/bui
 
 
 ifeq ($(DEBUG),1)
-OPTIMIZATION_FLAGS := -g -O0
+OPTIMIZATION_FLAGS := -g -O0 -v
 else
 OPTIMIZATION_FLAGS := -Os
 ifeq ($(UNAME),Darwin)
