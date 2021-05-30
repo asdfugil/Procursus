@@ -29,7 +29,8 @@ VLC_EXTRA_DEPS :=
 VLC_OPTS := --disable-osx-notifications \
 	--disable-macosx \
 	--disable-minimal-macosx \
-	--disable-bluray
+	--disable-bluray \
+	--disable-screen
 endif
 
 ifeq (,$(findstring arm,$(MEMO_TARGET)))
