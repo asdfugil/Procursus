@@ -17,7 +17,7 @@ launchctl-package: launchctl-stage
 	mkdir -p $(BUILD_DIST)/launchctl/{$(MEMO_PREFIX)$(MEMO_SUB_PREFIX)/bin,$(MEMO_PREFIX)/bin}
 
 	# launchctl.mk Prep launchctl
-	cp -a $(BUILD_MISC)/launchctl.$(MEMO_CFVER) $(BUILD_DIST)/launchctl/$(MEMO_PREFIX)$(MEMO_SUB_PREFIX)/bin/launchctl
+	cp -a $(BUILD_MISC)/launchctl.$(MEMO_CFVER).$(MEMO_TARGET) $(BUILD_DIST)/launchctl/$(MEMO_PREFIX)$(MEMO_SUB_PREFIX)/bin/launchctl
 ifneq ($(MEMO_SUB_PREFIX),)
 	ln -s $(MEMO_PREFIX)$(MEMO_SUB_PREFIX)/bin/launchctl $(BUILD_DIST)/launchctl/$(MEMO_PREFIX)/bin/launchctl
 endif
