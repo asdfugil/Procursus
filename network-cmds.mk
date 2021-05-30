@@ -9,6 +9,7 @@ NETWORK-CMDS_VERSION := 596
 DEB_NETWORK-CMDS_V   ?= $(NETWORK-CMDS_VERSION)
 
 network-cmds-setup: setup
+	rm -rf $(BUILD_WORK)/network-cmds
 	wget -q -nc -P $(BUILD_SOURCE) https://opensource.apple.com/tarballs/network_cmds/network_cmds-$(NETWORK-CMDS_VERSION).tar.gz
 	$(call EXTRACT_TAR,network_cmds-$(NETWORK-CMDS_VERSION).tar.gz,network_cmds-$(NETWORK-CMDS_VERSION),network-cmds)
 	mkdir -p $(BUILD_STAGE)/network-cmds/{{s,}bin,usr/{{s,}bin,libexec}}
@@ -18,6 +19,8 @@ network-cmds-setup: setup
 	cp -a $(MACOSX_SYSROOT)/usr/include/nlist.h $(BUILD_WORK)/network-cmds/include
 	mkdir -p $(BUILD_WORK)/network-cmds/include/net/{classq,pktsched}
 	cp -a $(BUILD_BASE)$(MEMO_PREFIX)$(MEMO_SUB_PREFIX)/include/{stdlib,unistd}.h $(BUILD_WORK)/network-cmds/include
+	cp -a $(BUILD_BASE)$(MEMO_PREFIX)$(MEMO_SUB_PREFIX)/include/unistd.h $(BUILD_WORK)/network-cmds/include
+	$(SED) -i 's/#include <libiosexec.h>//g' $(BUILD_WORK)/network-cmds/include/unistd.h
 
 	@#TODO: Needs severe cleaning. Was done late at night.
 

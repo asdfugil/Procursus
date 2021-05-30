@@ -11,7 +11,7 @@ libsoundio-setup: setup
 	$(call EXTRACT_TAR,libsoundio-$(LIBSOUNDIO_VERSION).tar.gz,libsoundio-$(LIBSOUNDIO_VERSION),libsoundio)
 
 ifeq (,$(findstring darwin,$(MEMO_TARGET)))
-	$(call DO_PATCH,libsoundio-ios,libsoundio,-p1)
+	#$(call DO_PATCH,libsoundio-ios,libsoundio,-p1)
 endif
 
 ifneq ($(wildcard $(BUILD_WORK)/libsoundio/.build_complete),)

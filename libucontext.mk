@@ -16,7 +16,7 @@ libucontext:
 	@echo "Using previously built libucontext."
 else
 libucontext: libucontext-setup
-	+$(MAKE) -C $(BUILD_WORK)/libucontext all \
+	$(MAKE) -C $(BUILD_WORK)/libucontext all \
 		ARCH=aarch64
 	mkdir -p $(BUILD_STAGE)/libucontext/$(MEMO_PREFIX)$(MEMO_SUB_PREFIX)/lib
 	cp -a $(BUILD_WORK)/libucontext/libucontext.a $(BUILD_STAGE)/libucontext/$(MEMO_PREFIX)$(MEMO_SUB_PREFIX)/lib
@@ -25,7 +25,7 @@ libucontext: libucontext-setup
 endif
 
 libucontext-package:
-	@echo There's no need for a libucontext package.
+	true
 
 .PHONY: libucontext
 

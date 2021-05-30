@@ -3,9 +3,9 @@ $(error Use the main Makefile)
 endif
 
 ifeq (,$(findstring darwin,$(MEMO_TARGET)))
-SUBPROJECTS        += diskdev-cmds
+# SUBPROJECTS        += diskdev-cmds
 else # ($(MEMO_TARGET),darwin-\*)
-SUBPROJECTS          += diskdev-cmds
+# SUBPROJECTS          += diskdev-cmds
 endif # ($(MEMO_TARGET),darwin-\*)
 DISKDEV-CMDS_VERSION := 667.40.1
 DEB_DISKDEV-CMDS_V   ?= $(DISKDEV-CMDS_VERSION)

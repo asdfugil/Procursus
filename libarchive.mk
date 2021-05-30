@@ -7,7 +7,7 @@ LIBARCHIVE_VERSION := 3.5.1
 DEB_LIBARCHIVE_V   ?= $(LIBARCHIVE_VERSION)
 
 libarchive-setup: setup
-	wget -q -nc -P $(BUILD_SOURCE) https://www.libarchive.org/downloads/libarchive-$(LIBARCHIVE_VERSION).tar.xz
+	wget -q -nc -P $(BUILD_SOURCE) https://web.archive.org/web/20210530114814/https://www.libarchive.org/downloads/libarchive-3.5.1.tar.xz
 	$(call EXTRACT_TAR,libarchive-$(LIBARCHIVE_VERSION).tar.xz,libarchive-$(LIBARCHIVE_VERSION),libarchive)
 
 ifneq ($(wildcard $(BUILD_WORK)/libarchive/.build_complete),)
