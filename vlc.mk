@@ -18,6 +18,8 @@ endif
 	$(call DO_PATCH,vlc,vlc,-p1)
 	$(SED) -i 's@include <OpenGL/@include <GL/@g' $(BUILD_WORK)/vlc/modules/visualization/glspectrum.c
 	$(SED) -i 's/-framework,OpenGL,/-lglapi,/g' $(BUILD_WORK)/vlc/modules/access/Makefile.am
+	$(SED) -i 's|libaudiotoolboxmidi_plugin_la_LDFLAGS += -Wl,-framework,CoreFoundation,-framework,AudioUnit,-framework,AudioToolbox|libaudiotoolboxmidi_plugin_la_LDFLAGS += -Wl,-framework,CoreFoundation,-F$(TARGET_SYSROOT)/System/Library/Frameworks,-framework,AudioUnit,-framework,AudioToolbox|g' $(BUILD_WORK)/vlc/modules/codec/Makefile.am
+	$(SED) -i 's|libaudiounit_ios_plugin_la_LDFLAGS = $(AM_LDFLAGS)|libaudiounit_ios_plugin_la_LDFLAGS = $(AM_LDFLAGS) -F$(TARGET_SYSROOT)/System/Library/Frameworks,|g' $(BUILD_WORK)/vlc/modules/audio_output/Makefile.am
 
 ifneq (,$(findstring darwin,$(MEMO_TARGET)))
 VLC_EXTRA_DEPS := libbluray libaacs libbluray
