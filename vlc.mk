@@ -19,7 +19,7 @@ endif
 	$(SED) -i 's@include <OpenGL/@include <GL/@g' $(BUILD_WORK)/vlc/modules/visualization/glspectrum.c
 	$(SED) -i 's/-framework,OpenGL,/-lglapi,/g' $(BUILD_WORK)/vlc/modules/access/Makefile.am
 	$(SED) -i 's|libaudiotoolboxmidi_plugin_la_LDFLAGS += -Wl,-framework,CoreFoundation,-framework,AudioUnit,-framework,AudioToolbox|libaudiotoolboxmidi_plugin_la_LDFLAGS += -Wl,-framework,CoreFoundation,-F$(TARGET_SYSROOT)/System/Library/Frameworks,-framework,AudioUnit,-framework,AudioToolbox|g' $(BUILD_WORK)/vlc/modules/codec/Makefile.am
-	$(SED) -i 's|libaudiounit_ios_plugin_la_LDFLAGS = $(AM_LDFLAGS)|libaudiounit_ios_plugin_la_LDFLAGS = $(AM_LDFLAGS) -F$(TARGET_SYSROOT)/System/Library/Frameworks,|g' $(BUILD_WORK)/vlc/modules/audio_output/Makefile.am
+	$(SED) -i 's|libaudiounit_ios_plugin_la_LDFLAGS = $(AM_LDFLAGS)|libaudiounit_ios_plugin_la_LDFLAGS = $(AM_LDFLAGS) -F$(TARGET_SYSROOT)/System/Library/Frameworks |g' $(BUILD_WORK)/vlc/modules/audio_output/Makefile.am
 
 ifneq (,$(findstring darwin,$(MEMO_TARGET)))
 VLC_EXTRA_DEPS := libbluray libaacs libbluray
@@ -51,7 +51,7 @@ vlc:
 	@echo "Using previously built vlc."
 else
 vlc: aom dav1d ffmpeg fontconfig freetype frei0r gnutls lame libarchive libass libdvdcss libdvdnav libdvdread libpng16 libsoxr libssh2 libvidstab libvorbis libvpx libopencore-amr openjpeg libopus libx11 libxft libxcb lua5.4 rav1e rtmpdump rubberband sdl2 libsnappy libspeex libsrt tesseract libtheora libwebp mesa x264 x265 libxvidcore xz  $(VLC_EXTRA_DEPS) vlc-setup
-	cd $(BUILD_WORK)/vlc && ./bootstrap && LDFLAGS="-I$(BUILD_BASE)$(MEMO_PREFIX)$(MEMO_SUB_PREFIX)/lib/lua5.4 -L$(BUILD_BASE)$(MEMO_PREFIX)$(MEMO_SUB_PREFIX)/lib -framework CoreFoundation -framework CFNetwork -F$(TARGET_SYSROOT)/System/Library/Frameworks -arch $(MEMO_ARCH) $(LDFLAGS)" ./configure -C \
+	cd $(BUILD_WORK)/vlc && ./bootstrap && export CFLAGS="-I$(BUILD_BASE)$(MEMO_PREFIX)$(MEMO_SUB_PREFIX)/lib/lua5.4 -L$(BUILD_BASE)$(MEMO_PREFIX)$(MEMO_SUB_PREFIX)/lib -framework CoreFoundation -framework CFNetwork -F$(TARGET_SYSROOT)/System/Library/Frameworks -arch $(MEMO_ARCH) $(CFLAGS)" && export OBJCFLAGS="$$CFLAGS" && ./configure -C \
 		$(DEFAULT_CONFIGURE_FLAGS) \
 		--disable-qt \
 		--disable-sparkle \
