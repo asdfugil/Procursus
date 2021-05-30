@@ -23,7 +23,7 @@ diskdev-cmds-setup: setup
 	# Mess of copying over headers because some build_base headers interfere with the build of Apple cmds.
 	mkdir -p $(BUILD_WORK)/diskdev-cmds/include/{arm,machine,{System/,}sys,uuid}
 	cp -a $(MACOSX_SYSROOT)/usr/include/sys/{disk,reboot,vnioctl,vmmeter}.h $(MACOSX_SYSROOT)/System/Library/Frameworks/Kernel.framework/Versions/Current/Headers/sys/disklabel.h $(BUILD_WORK)/diskdev-cmds/include/sys
-	cp -a $(BUILD_BASE)$(MEMO_PREFIX)$(MEMO_SUB_PREFIX)/include/{unistd,stdlib}.h $(BUILD_WORK)/diskdev-cmds/include
+	cp -a $(BUILD_BASE)$(MEMO_PREFIX)$(MEMO_SUB_PREFIX)/include/{unistd,stdlib,libiosexec}.h $(BUILD_WORK)/diskdev-cmds/include
 
 	wget -q -nc -P $(BUILD_WORK)/diskdev-cmds/include \
 		https://opensource.apple.com/source/libutil/libutil-57/mntopts.h \
@@ -44,7 +44,7 @@ diskdev-cmds:
 	@echo "Using previously built diskdev-cmds."
 else
 diskdev-cmds: .SHELLFLAGS=-O extglob -c
-diskdev-cmds: diskdev-cmds-setup
+diskdev-cmds: libxcrypt diskdev-cmds-setup
 	cd $(BUILD_WORK)/diskdev-cmds/disklib; \
 	rm -f mntopts.h getmntopts.c; \
 	for arch in $(MEMO_ARCH); do \
@@ -71,7 +71,7 @@ diskdev-cmds: diskdev-cmds-setup
 		if [[ $$tproj = vsdbutil ]]; then \
 			extra="${extra} mount_flags_dir/mount_flags.c"; \
 		fi; \
-		$(CC) -arch $(MEMO_ARCH) -isysroot $(TARGET_SYSROOT) $(PLATFORM_VERSION_MIN) -isystem include -DTARGET_OS_SIMULATOR -Idisklib -o $$tproj $$(find "$$tproj.tproj" -name '*.c') $${LIBDISKA} -lutil $$extra; \
+		$(CC) -arch $(MEMO_ARCH) -isysroot $(TARGET_SYSROOT) $(PLATFORM_VERSION_MIN) -isystem include -DTARGET_OS_SIMULATOR -Idisklib -o $$tproj $$(find "$$tproj.tproj" -name '*.c') $${LIBDISKA} -lutil -L$(BUILD_BASE)$(MEMO_REPFIX)$(MEMO_SUB_PREFIX)/lib -liosexec $$extra; \
 	done
 	cd $(BUILD_WORK)/diskdev-cmds/fstyp.tproj; \
 	for c in *.c; do \
