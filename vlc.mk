@@ -14,13 +14,13 @@ ifeq (,$(findstring darwin,$(MEMO_TARGET)))
 	$(SED) -i 's/-framework,ApplicationServices//g' $(BUILD_WORK)/vlc/modules/access/Makefile.am
 	$(SED) -i 's@\tgui/macosx/VLCCoreDialogProvider.h gui/macosx/VLCCoreDialogProvider.m \\@\\@g' $(BUILD_WORK)/vlc/modules/gui/macosx/Makefile.am
 	$(SED) -i 's/VLC_ADD_PLUGIN([minimal_macosx])/VLC_ADD_PLUGIN([])/g' $(BUILD_WORK)/vlc/configure.ac
+	$(SED) -i 's|-Wl,-framework,VideoToolbox|-Wl,-framework,VideoToolbox -Wl,-framework,UIKit|g' $(BUILD_WORK)/vlc/modules/{video_chroma,codec}/Makefile.am
 endif
 	$(call DO_PATCH,vlc,vlc,-p1)
 	$(SED) -i 's@include <OpenGL/@include <GL/@g' $(BUILD_WORK)/vlc/modules/visualization/glspectrum.c
 	$(SED) -i 's/-framework,OpenGL,/-lglapi,/g' $(BUILD_WORK)/vlc/modules/access/Makefile.am
-	$(SED) -i 's|libaudiotoolboxmidi_plugin_la_LDFLAGS += -Wl,-framework,CoreFoundation,-framework,AudioUnit,-framework,AudioToolbox|libaudiotoolboxmidi_plugin_la_LDFLAGS += -Wl,-framework,CoreFoundation,-F$(TARGET_SYSROOT)/System/Library/Frameworks,-framework,AudioUnit,-framework,AudioToolbox|g' $(BUILD_WORK)/vlc/modules/codec/Makefile.am
-	$(SED) -i 's|libaudiounit_ios_plugin_la_LDFLAGS = $(AM_LDFLAGS)|libaudiounit_ios_plugin_la_LDFLAGS = $(AM_LDFLAGS) -F$(TARGET_SYSROOT)/System/Library/Frameworks |g' $(BUILD_WORK)/vlc/modules/audio_output/Makefile.am
-
+	$(SED) -i 's|libaudiotoolboxmidi_plugin_la_LDFLAGS += -Wl,-framework,CoreFoundation,-framework,AudioUnit,-framework,AudioToolbox|libaudiotoolboxmidi_plugin_la_LDFLAGS += -Wl,-framework,CoreFoundation,-framework,AudioToolbox|g' $(BUILD_WORK)/vlc/modules/codec/Makefile.am
+	$(SED) -i 's|-framework,AudioUnit,|-framework,Foundation,|g' $(BUILD_WORK)/vlc/modules/audio_output/Makefile.am
 ifneq (,$(findstring darwin,$(MEMO_TARGET)))
 VLC_EXTRA_DEPS := libbluray libaacs libbluray
 VLC_OPTS := --enable-libbluray \
@@ -32,7 +32,8 @@ VLC_OPTS := --disable-osx-notifications \
 	--disable-macosx \
 	--disable-minimal-macosx \
 	--disable-bluray \
-	--disable-screen
+	--disable-screen \
+	--disable-videotoolbox
 endif
 
 ifeq (,$(findstring arm,$(MEMO_TARGET)))
