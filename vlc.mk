@@ -21,6 +21,8 @@ endif
 	$(SED) -i 's/-framework,OpenGL,/-lglapi,/g' $(BUILD_WORK)/vlc/modules/access/Makefile.am
 	$(SED) -i 's|libaudiotoolboxmidi_plugin_la_LDFLAGS += -Wl,-framework,CoreFoundation,-framework,AudioUnit,-framework,AudioToolbox|libaudiotoolboxmidi_plugin_la_LDFLAGS += -Wl,-framework,CoreFoundation,-framework,AudioToolbox|g' $(BUILD_WORK)/vlc/modules/codec/Makefile.am
 	$(SED) -i 's|-framework,AudioUnit,|-framework,Foundation,|g' $(BUILD_WORK)/vlc/modules/audio_output/Makefile.am
+	$(SED) -i 's/libci_filters_plugin_la_LDFLAGS = /libci_filters_plugin_la_LDFLAGS = -Wl,-supress/g' $(BUILD_WORK)/vlc/modules/video_filter/Makefile.am
+
 ifneq (,$(findstring darwin,$(MEMO_TARGET)))
 VLC_EXTRA_DEPS := libbluray libaacs libbluray
 VLC_OPTS := --enable-libbluray \
