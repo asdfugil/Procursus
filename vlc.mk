@@ -46,7 +46,7 @@ VLC_OPTS += --enable-mmx \
 else
 VLC_OPTS += --disable-mmx \
         --disable-sse \
-	--disable-neon \
+	--enable-neon \
 	--enable-arm64
 endif
 ifneq ($(wildcard $(BUILD_WORK)/vlc/.build_complete),)
