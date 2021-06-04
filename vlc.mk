@@ -54,7 +54,7 @@ vlc:
 	@echo "Using previously built vlc."
 else
 vlc: aom dav1d ffmpeg fontconfig freetype frei0r gnutls lame libarchive libass libdvdcss libdvdnav libdvdread libpng16 libsoxr libssh2 libvidstab libvorbis libvpx libopencore-amr openjpeg libopus libx11 libxft libxcb lua5.4 rav1e rtmpdump rubberband sdl2 libsnappy libspeex libsrt tesseract libtheora libwebp mesa x264 x265 libxvidcore xz  $(VLC_EXTRA_DEPS) vlc-setup
-	cd $(BUILD_WORK)/vlc && ./bootstrap && export CFLAGS="-I$(BUILD_BASE)$(MEMO_PREFIX)$(MEMO_SUB_PREFIX)/lib/lua5.4 -L$(BUILD_BASE)$(MEMO_PREFIX)$(MEMO_SUB_PREFIX)/lib -framework CoreFoundation -framework CFNetwork -F$(TARGET_SYSROOT)/System/Library/Frameworks -arch $(MEMO_ARCH) $(CFLAGS)" && export OBJCFLAGS="$$CFLAGS" && ./configure -C \
+	cd $(BUILD_WORK)/vlc && ./bootstrap && export CFLAGS="-I$(BUILD_BASE)$(MEMO_PREFIX)$(MEMO_SUB_PREFIX)/lib/lua5.4 -L$(BUILD_BASE)$(MEMO_PREFIX)$(MEMO_SUB_PREFIX)/lib -framework Foundation -framework CoreFoundation -framework CFNetwork -arch $(MEMO_ARCH) $(CFLAGS)" && export OBJCFLAGS="$$CFLAGS" && ./configure -C \
 		$(DEFAULT_CONFIGURE_FLAGS) \
 		--disable-qt \
 		--disable-sparkle \
