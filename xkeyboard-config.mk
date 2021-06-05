@@ -16,7 +16,8 @@ xkeyboard-config:
 else
 xkeyboard-config: xkeyboard-config-setup xorgproto
 	cd $(BUILD_WORK)/xkeyboard-config && ./configure \
-		$(DEFAULT_CONFIGURE_FLAGS)
+		$(DEFAULT_CONFIGURE_FLAGS) \
+		--disable-runtime-deps
 	+$(MAKE) -C $(BUILD_WORK)/xkeyboard-config
 	+$(MAKE) -C $(BUILD_WORK)/xkeyboard-config install \
 		DESTDIR=$(BUILD_STAGE)/xkeyboard-config
