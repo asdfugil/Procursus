@@ -38,6 +38,9 @@ endif
 
 %-binutils-target: binutils-setup gettext
 	target=$$(echo $@ | rev | cut -d- -f3- | rev); \
+	if [ "$$GNU_HOST_TRIPLE" = "$$target" ]; then \
+		binutils_extra_flags=--program-prefix=g; \
+	fi; \
 	if [ -f $(BUILD_WORK)/binutils/$$target/.build_complete ]; then \
 		echo "Using previously built $$target binutils"; \
 	else \
@@ -49,7 +52,7 @@ endif
 			--libdir=$(MEMO_PREFIX)$(MEMO_SUB_PREFIX)/$(GNU_HOST_TRIPLE)/$$target/lib \
 			--includedir=$(MEMO_PREFIX)$(MEMO_SUB_PREFIX)/$(GNU_HOST_TRIPLE)/$$target/include \
 			--target=$$target \
-			$(BINUTILS_CONFARGS); \
+			$(BINUTILS_CONFARGS) $$binutils_extra_flags; \
 		$(MAKE) -C $(BUILD_WORK)/binutils/$$target; \
 		$(MAKE) -C $(BUILD_WORK)/binutils/$$target install \
 			DESTDIR=$(BUILD_STAGE)/binutils/$$target; \
@@ -61,10 +64,11 @@ binutils-package: binutils-stage
 	for target in $(BINUTILS_TARGETS); do \
 		rm -rf $(BUILD_DIST)/binutils-$$target; \
 	done
-	rm -rf $(BUILD_DIST)/binutils-common
+	rm -rf $(BUILD_DIST)/binutils{,-common}
+	mkdir -p $(BUILD_DIST)/binutils
 	mkdir -p $(BUILD_DIST)/binutils-common/$(MEMO_PREFIX)$(MEMO_SUB_PREFIX)
 	
-	# binutils.mk Prep binutils-*
+	#  binutils.mk Prep binutils-*
 	for target in $(BINUTILS_TARGETS); do \
 		cp -r $(BUILD_STAGE)/binutils/$$target $(BUILD_DIST)/binutils-$$target; \
 	done
@@ -78,8 +82,11 @@ binutils-package: binutils-stage
 	done
 	cp -r $(BUILD_STAGE)/binutils/x86_64-linux-gnu/$(MEMO_PREFIX)$(MEMO_SUB_PREFIX)/share $(BUILD_DIST)/binutils-common/$(MEMO_PREFIX)$(MEMO_SUB_PREFIX)
 	for man in $(BUILD_DIST)/binutils-common/$(MEMO_PREFIX)$(MEMO_SUB_PREFIX)/share/man/man1/*; do \
-		mv $$man $(BUILD_DIST)/binutils-common/$(MEMO_PREFIX)$(MEMO_SUB_PREFIX)/share/man/man1/binutils-$$(basename $$man .1 | rev | cut -d- -f1 | rev ).1; \
+	mv $$man $(BUILD_DIST)/binutils-common/$(MEMO_PREFIX)$(MEMO_SUB_PREFIX)/share/man/man1/binutils-$$(basename $$man .1 | rev | cut -d- -f1 | rev ).1; \
 	done
+	# binutils.mk Prep binutils
+	# No architecure-specific control mechanism in PACK, sorry.
+	export BRUH_TRIPLE=$(GNU_HOST_TRIPLE) && sed "s/@TARGET@/$(sed 's/_/-/g' <<< "$$BRUH_TRIPLE")/g" $(BUILD_INFO)/binutils-native.control.in > $(BUILD_INFO)/binutils.control
 	
 	# binutils.mk Sign
 	for target in $(BINUTILS_TARGETS); do \
@@ -94,11 +101,13 @@ binutils-package: binutils-stage
 		$(patsubst -if,if,$(call PACK,binutils-$$target,DEB_BINUTILS_V)); \
 	done
 	$(call PACK,binutils-common,DEB_BINUTILS_V)
+	$(call PACK,binutils,DEB_BINUTILS_V)
 	
 	# binutils.mk Build cleanup
 	for target in $(BINUTILS_TARGETS); do \
 		rm -rf $(BUILD_DIST)/binutils-$$target; \
 	done
-	rm -rf $(BUILD_DIST)/binutils-common
+	rm -rf $(BUILD_DIST)/binutils{,-common}
+	rm $(BUILD_INFO)/binutils.control
 
 .PHONY: binutils binutils-package
