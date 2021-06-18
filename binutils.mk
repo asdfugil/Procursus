@@ -86,7 +86,7 @@ binutils-package: binutils-stage
 	done
 	# binutils.mk Prep binutils
 	# No architecure-specific control mechanism in PACK, sorry.
-	export BRUH_TRIPLE=$(GNU_HOST_TRIPLE) && sed "s/@TARGET@/$(sed 's/_/-/g' <<< "$$BRUH_TRIPLE")/g" $(BUILD_INFO)/binutils-native.control.in > $(BUILD_INFO)/binutils.control
+	sed "s/@TARGET@/$(sed 's/_/-/g' <<< "$(GNU_HOST_TRIPLE)")/g" $(BUILD_INFO)/binutils-native.control.in > $(BUILD_INFO)/binutils.control
 	
 	# binutils.mk Sign
 	for target in $(BINUTILS_TARGETS); do \
