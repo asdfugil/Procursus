@@ -86,7 +86,7 @@ binutils-package: binutils-stage
 	done
 	# binutils.mk Prep binutils
 	# No architecure-specific control mechanism in PACK, sorry.
-	$(SED) -e "s/@TARGET@/$($(SED) -e 's/_/-/g' <<< "$(GNU_HOST_TRIPLE)")/g" $(BUILD_INFO)/binutils-native.control.in > $(BUILD_INFO)/binutils.control
+	$(SED) -e "s/@TARGET@/$$($(SED) -e 's/_/-/g' <<< "$(GNU_HOST_TRIPLE)")/g" $(BUILD_INFO)/binutils-native.control.in > $(BUILD_INFO)/binutils.control
 	
 	# binutils.mk Sign
 	for target in $(BINUTILS_TARGETS); do \
@@ -100,8 +100,8 @@ binutils-package: binutils-stage
 	-for target in $(BINUTILS_TARGETS); do \
 		$(patsubst -if,if,$(call PACK,binutils-$$target,DEB_BINUTILS_V)); \
 	done
-	$(call PACK,binutils-common,DEB_BINUTILS_V)
 	$(call PACK,binutils,DEB_BINUTILS_V)
+	$(call PACK,binutils-common,DEB_BINUTILS_V)
 	
 	# binutils.mk Build cleanup
 	for target in $(BINUTILS_TARGETS); do \
