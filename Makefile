@@ -875,13 +875,13 @@ endif # $(shell [ "$(CFVER_WHOLE)" -ge 1600 ] && echo 1),1
 	chmod 0775 $(BUILD_STRAP)/strap/$(MEMO_PREFIX)/Library
 	mkdir -p $(BUILD_STRAP)/strap/private/etc/apt/preferences.d
 	$(CP) $(BUILD_INFO)/procursus.preferences $(BUILD_STRAP)/strap/private/etc/apt/preferences.d/procursus
-	wget -q -c -O $(BUILD_STRAP)/strap/private/etc/apt/trusted.gpg.d/nickchan.gpg https://asdfugil.github.io/tabletv/nickchan.gpg
+	wget -q -c -O $(BUILD_STRAP)/strap/private/etc/apt/trusted.gpg.d/nickchan.gpg https://apt.nickchan.gq/nickchan.gpg
 	#cp $(BUILD_INFO)/libiosexec.dylib  $(BUILD_STRAP)/strap/usr/lib
 	#cp $(BUILD_INFO)/pwd_mkdb  $(BUILD_STRAP)/strap/usr/lib/usr/sbin
 	touch $(BUILD_STRAP)/strap/.procursus_strapped
 	touch $(BUILD_STRAP)/strap/private/etc/apt/sources.list.d/procursus.sources
 	echo -e "Types: deb\n\
-URIs: https://asdfugil.github.io/tabletv/\n\
+URIs: https://apt.nickchan.gq/\n\
 Suites: $(MEMO_TARGET)/$(MEMO_CFVER)\n\
 Components: main\n" > $(BUILD_STRAP)/strap/private/etc/apt/sources.list.d/procursus.sources
 	cp $(BUILD_MISC)/prep_bootstrap.sh $(BUILD_STRAP)/strap
