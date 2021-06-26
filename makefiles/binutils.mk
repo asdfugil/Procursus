@@ -107,7 +107,7 @@ binutils-package: binutils-stage
 	
 	# binutils.mk Build cleanup
 	for target in $(BINUTILS_TARGETS); do \
-		rm -rf $(BUILD_DIST)/binutils-$$target; \
+		rm -rf $(BUILD_DIST)/binutils-$$($(SED) 's/_/-/g' <<< "$$target"); \
 		rm $(BUILD_INFO)/binutils-$$($(SED) 's/_/-/g' <<< "$$target").control; \
 	done
 	rm -rf $(BUILD_DIST)/binutils{,-common}
