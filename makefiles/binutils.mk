@@ -6,7 +6,7 @@ SUBPROJECTS      += binutils
 BINUTILS_VERSION := 2.36.1
 DEB_BINUTILS_V   ?= $(BINUTILS_VERSION)
 
-BINUTILS_TARGETS := aarch64-linux-gnu aarch64-linux-musl alpha-linux-gnu alpha-linux-musl arm-linux-gnueabi arm-linux-gnueabihf arm-linux-musl arm-linux-musl i686-gnu i686-kfreebsd-gnu i686-linux-gnu i686-linux-musl ia64-linux-gnu ia64-linux-musl m68k-linux-gnu m68k-linux-musl mips64el-linux-gnuabi64 mips64el-linux-musl mipsel-linux-gnu mipsel-linux-musl powerpc-linux-gnu powerpc-linux-musl powerpc64-linux-gnu powerpc64-linux-musl powerpc64le-linux-gnu powerpc64le-linux-musl riscv64-linux-gnu riscv64-linux-musl s390x-linux-gnu s390x-linux-musl sh4-linux-gnu sh4-linux-musl sparc64-linux-gnu sparc64-linux-musl x86_64-linux-gnu x86_64-linux-musl powerpc-apple-darwin x86_64-apple-darwin i686-apple-darwin arm-apple-darwin aarch64-apple-darwin i686-hurd-gnu
+BINUTILS_TARGETS := aarch64-linux-gnu aarch64-linux-musl alpha-linux-gnu alpha-linux-musl arm-linux-gnueabi arm-linux-gnueabihf arm-linux-musl i686-gnu i686-kfreebsd-gnu i686-linux-gnu i686-linux-musl ia64-linux-gnu ia64-linux-musl m68k-linux-gnu m68k-linux-musl mips64el-linux-gnuabi64 mips64el-linux-musl mipsel-linux-gnu mipsel-linux-musl powerpc-linux-gnu powerpc-linux-musl powerpc64-linux-gnu powerpc64-linux-musl powerpc64le-linux-gnu powerpc64le-linux-musl riscv64-linux-gnu riscv64-linux-musl s390x-linux-gnu s390x-linux-musl sh4-linux-gnu sh4-linux-musl sparc64-linux-gnu sparc64-linux-musl x86_64-linux-gnu x86_64-linux-musl powerpc-apple-darwin x86_64-apple-darwin i686-apple-darwin arm-apple-darwin aarch64-apple-darwin i686-hurd-gnu
 
 BINUTILS_CONFARGS := --enable-obsolete \
 	--enable-shared \
@@ -63,6 +63,7 @@ binutils-package: binutils-stage
 	# binutils.mk Package Structure
 	for target in $(BINUTILS_TARGETS); do \
 		rm -rf $(BUILD_DIST)/binutils-$$target; \
+		rm -rf $(BUILD_INFO)/binutils-$$($(SED) 's/_/-/g' <<< "$$target").control; \
 	done
 	rm -rf $(BUILD_DIST)/binutils{,-common}
 	mkdir -p $(BUILD_DIST)/binutils
@@ -70,7 +71,8 @@ binutils-package: binutils-stage
 	
 	#  binutils.mk Prep binutils-*
 	for target in $(BINUTILS_TARGETS); do \
-		cp -r $(BUILD_STAGE)/binutils/$$target $(BUILD_DIST)/binutils-$$target; \
+		cp -r $(BUILD_STAGE)/binutils/$$target $(BUILD_DIST)/binutils-$$($(SED) -e 's/_/-/g' <<< "$$target"); \
+		$(SED) -e "s/@TARGET@/$$($(SED) -e 's/_/-/g' <<< "$$target")/g" $(BUILD_INFO)/binutils.control.in > $(BUILD_INFO)/binutils-$$($(SED) -e 's/_/-/g' <<< "$$target").control; \
 	done
 	for target in $(BINUTILS_TARGETS); do \
 		for pkg in $(BUILD_DIST)/binutils-$$target; do \
@@ -82,7 +84,7 @@ binutils-package: binutils-stage
 	done
 	cp -r $(BUILD_STAGE)/binutils/x86_64-linux-gnu/$(MEMO_PREFIX)$(MEMO_SUB_PREFIX)/share $(BUILD_DIST)/binutils-common/$(MEMO_PREFIX)$(MEMO_SUB_PREFIX)
 	for man in $(BUILD_DIST)/binutils-common/$(MEMO_PREFIX)$(MEMO_SUB_PREFIX)/share/man/man1/*; do \
-	mv $$man $(BUILD_DIST)/binutils-common/$(MEMO_PREFIX)$(MEMO_SUB_PREFIX)/share/man/man1/binutils-$$(basename $$man .1 | rev | cut -d- -f1 | rev ).1; \
+		mv $$man $(BUILD_DIST)/binutils-common/$(MEMO_PREFIX)$(MEMO_SUB_PREFIX)/share/man/man1/binutils-$$(basename $$man .1 | rev | cut -d- -f1 | rev ).1; \
 	done
 	# binutils.mk Prep binutils
 	# No architecure-specific control mechanism in PACK, sorry.
@@ -98,7 +100,7 @@ binutils-package: binutils-stage
 	
 	# binutils.mk Make .debs
 	-for target in $(BINUTILS_TARGETS); do \
-		$(patsubst -if,if,$(call PACK,binutils-$$target,DEB_BINUTILS_V)); \
+		$(patsubst -if,if,$(call PACK,binutils-$$($(SED) -e 's/_/-/g' <<< "$$target"),DEB_BINUTILS_V)); \
 	done
 	$(call PACK,binutils,DEB_BINUTILS_V)
 	$(call PACK,binutils-common,DEB_BINUTILS_V)
@@ -106,6 +108,7 @@ binutils-package: binutils-stage
 	# binutils.mk Build cleanup
 	for target in $(BINUTILS_TARGETS); do \
 		rm -rf $(BUILD_DIST)/binutils-$$target; \
+		rm $(BUILD_INFO)/binutils-$$($(SED) 's/_/-/g' <<< "$$target").control; \
 	done
 	rm -rf $(BUILD_DIST)/binutils{,-common}
 	rm $(BUILD_INFO)/binutils.control
