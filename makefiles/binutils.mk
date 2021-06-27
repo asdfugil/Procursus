@@ -6,7 +6,7 @@ SUBPROJECTS      += binutils
 BINUTILS_VERSION := 2.36.1
 DEB_BINUTILS_V   ?= $(BINUTILS_VERSION)
 
-BINUTILS_TARGETS := aarch64-linux-gnu aarch64-linux-musl alpha-linux-gnu alpha-linux-musl arm-linux-gnueabi arm-linux-gnueabihf arm-linux-musl hppa-linux-gnu hppa-linux-musl i686-kfreebsd-gnu i686-linux-gnu i686-linux-musl ia64-linux-gnu ia64-linux-musl m68k-linux-gnu m68k-linux-musl mips64el-linux-gnuabi64 mips64el-linux-musl mipsel-linux-gnu mipsel-linux-musl powerpc-linux-gnu powerpc-linux-musl powerpc64-linux-gnu powerpc64-linux-musl powerpc64le-linux-gnu powerpc64le-linux-musl riscv64-linux-gnu riscv64-linux-musl s390x-linux-gnu s390x-linux-musl sh4-linux-gnu sh4-linux-musl sparc64-linux-gnu sparc64-linux-musl x86_64-linux-gnu x86_64-linux-musl powerpc-apple-darwin x86_64-apple-darwin i686-apple-darwin arm-apple-darwin aarch64-apple-darwin i686-hurd-gnu i686-elf x86_64-elf arm-none-eabi aarch64-elf riscv64-elf alpha-elf ia64-elf m68k-elf powerpc-elf powerpc64-elf powerpc64le-elf mips64el-elf hppa-elf s390x-elf sh4-elf sparc64-elf i686-unknown-haiku x86_64-unknown-haiku arm-unknown-haiku aarch64-unknown-haiku powerpc64-freebsd powerpc64le-freebsd x86_64-freebsd i386-freebsd arm-freebsd aarch64-freebsd alpha-netbsd x86_64-netbsd arm-netbsd mips-netbsd powerpc-netbsd i386-netbsd sparc-netbsd sh3-netbsd m68k-netbsd hppa-netbsd vax-netbsd ia64-netbsd x86_64-dragonfly x86_64-sun-solaris sparc-sun-solaris alpha-dec-osf hppa-hp-hpux i486-beos i486-bsdi i586-pc-cygwin i386-ncr-sysv i386-pc-sco3 i386-UnixWare-sysv m68k-next-nextstep mips-sgi-irix powerpc-ibm-aix rs6000-ibm-aix sparc-unknown-bsdi
+BINUTILS_TARGETS := aarch64-linux-gnu aarch64-linux-musl alpha-linux-gnu alpha-linux-musl arm-linux-gnueabi arm-linux-gnueabihf arm-linux-musl hppa-linux-gnu hppa-linux-musl i686-kfreebsd-gnu i686-linux-gnu i686-linux-musl ia64-linux-gnu ia64-linux-musl m68k-linux-gnu m68k-linux-musl mips64el-linux-gnuabi64 mips64el-linux-musl mipsel-linux-gnu mipsel-linux-musl powerpc-linux-gnu powerpc-linux-musl powerpc64-linux-gnu powerpc64-linux-musl powerpc64le-linux-gnu powerpc64le-linux-musl riscv64-linux-gnu riscv64-linux-musl s390x-linux-gnu s390x-linux-musl sh4-linux-gnu sh4-linux-musl sparc64-linux-gnu sparc64-linux-musl x86_64-linux-gnu x86_64-linux-musl powerpc-apple-darwin x86_64-apple-darwin i686-apple-darwin arm-apple-darwin aarch64-apple-darwin i686-hurd-gnu i686-elf x86_64-elf arm-none-eabi aarch64-elf riscv64-elf ia64-elf m68k-elf powerpc-elf powerpc64-elf powerpc64le-elf mips64el-elf hppa-elf sh4-elf sparc64-elf powerpc64-freebsd powerpc64le-freebsd x86_64-freebsd i386-freebsd arm-freebsd aarch64-freebsd alpha-netbsd x86_64-netbsd mips-netbsd powerpc-netbsd sparc-netbsd sparc64-netbsd hppa-netbsd ia64-netbsd x86_64-dragonfly x86_64-sun-solaris sparc-sun-solaris sparc64-sun-solaris alpha-dec-osf hppa-hp-hpux i486-beos i486-bsdi i586-pc-cygwin powerpc-ibm-aix rs6000-ibm-aix sparc-unknown-bsdi
 
 BINUTILS_CONFARGS := --enable-obsolete \
 	--enable-shared \
@@ -33,7 +33,19 @@ binutils:
 	@echo "Using previously built binutils."
 else
 binutils: binutils-setup $(patsubst %,%-binutils-target,$(BINUTILS_TARGETS))
-	touch $(BUILD_WORK)/binutils/.build_complete
+	broken_count=0; \
+	for target in $(BINUTILS_TARGETS); \
+		do if [ ! -d $(BUILD_STAGE)/binutils/$$target/$(MEMO_PREFIX)$(MEMO_SUB_PREFIX)/bin ]; then \
+			echo "Target $$target is broken."; \
+			let broken_count+=1; \
+		fi; \
+	done; \
+	if [ $$broken_count = 0 ]; then \
+		touch $(BUILD_WORK)/binutils/.build_complete; \
+	else \
+		echo "The above $$broken_count targets is/are broken."; \
+		exit 1; \
+	fi
 endif
 
 %-binutils-target: binutils-setup gettext
