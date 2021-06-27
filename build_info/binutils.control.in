@@ -2,7 +2,7 @@ Package: binutils-@TARGET@
 Version: @DEB_BINUTILS_V@
 Architecture: @DEB_ARCH@
 Maintainer: @DEB_MAINTAINER@
-Section: development
+Section: Development
 Priority: optional
 Homepage: http://www.gnu.org/software/binutils/
 Description: GNU binary utilities, for @TARGET@ target
