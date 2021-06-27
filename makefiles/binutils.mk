@@ -74,7 +74,7 @@ endif
 binutils-package: binutils-stage
 	# binutils.mk Package Structure
 	for target in $(BINUTILS_TARGETS); do \
-		rm -rf $(BUILD_DIST)/binutils-$$target; \
+		rm -rf $(BUILD_DIST)/binutils-$$($(SED) -e 's/_/-/g' <<< "$$target"); \
 		rm -rf $(BUILD_INFO)/binutils-$$($(SED) 's/_/-/g' <<< "$$target").control; \
 	done
 	rm -rf $(BUILD_DIST)/binutils{,-common}
@@ -87,7 +87,7 @@ binutils-package: binutils-stage
 		$(SED) -e "s/@TARGET@/$$($(SED) -e 's/_/-/g' <<< "$$target")/g" $(BUILD_INFO)/binutils.control.in > $(BUILD_INFO)/binutils-$$($(SED) -e 's/_/-/g' <<< "$$target").control; \
 	done
 	for target in $(BINUTILS_TARGETS); do \
-		for pkg in $(BUILD_DIST)/binutils-$$target; do \
+		for pkg in $(BUILD_DIST)/binutils-$$($(SED) -e 's/_/-/g' <<< "$$target"); do \
 			for man in $$pkg/$(MEMO_PREFIX)$(MEMO_SUB_PREFIX)/share/man/man1/*; do \
 				$(LN) -sf binutils-$$(basename $$man .1 | rev | cut -d- -f1 | rev ).1.zst $$man; \
 			done; \
