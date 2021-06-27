@@ -92,7 +92,7 @@ binutils-package: binutils-stage
 	
 	# binutils.mk Sign
 	for target in $(BINUTILS_TARGETS); do \
-		$(call SIGN,binutils-$$($(SED) -e 's/_/-/g' <<< "$(GNU_HOST_TRIPLE)"),general.xml);\
+		$(call SIGN,binutils-$$($(SED) -e 's/_/-/g' <<< "$$target"),general.xml);\
 	done
 	
 	# Make control files with:
