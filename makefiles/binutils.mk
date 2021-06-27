@@ -6,7 +6,7 @@ SUBPROJECTS      += binutils
 BINUTILS_VERSION := 2.36.1
 DEB_BINUTILS_V   ?= $(BINUTILS_VERSION)
 
-BINUTILS_TARGETS := aarch64-linux-gnu aarch64-linux-musl alpha-linux-gnu alpha-linux-musl arm-linux-gnueabi arm-linux-gnueabihf arm-linux-musl hppa-linux-gnu hppa-linux-musl i686-kfreebsd-gnu i686-linux-gnu i686-linux-musl ia64-linux-gnu ia64-linux-musl m68k-linux-gnu m68k-linux-musl mips64el-linux-gnuabi64 mips64el-linux-musl mipsel-linux-gnu mipsel-linux-musl powerpc-linux-gnu powerpc-linux-musl powerpc64-linux-gnu powerpc64-linux-musl powerpc64le-linux-gnu powerpc64le-linux-musl riscv64-linux-gnu riscv64-linux-musl s390x-linux-gnu s390x-linux-musl sh4-linux-gnu sh4-linux-musl sparc64-linux-gnu sparc64-linux-musl x86_64-linux-gnu x86_64-linux-musl powerpc-apple-darwin x86_64-apple-darwin i686-apple-darwin arm-apple-darwin aarch64-apple-darwin i686-hurd-gnu i686-elf x86_64-elf arm-none-eabi aarch64-elf riscv64-elf alpha-elf ia64-elf m68k-elf powerpc-elf powerpc64-elf powerpc64le-elf mipsel-elf mipsel64-elf hppa-elf s390x-elf sh4-elf sparc64-elf i686-unknown-haiku x86_64-unknown-haiku arm-unknown-haiku aarch64-unknown-haiku
+BINUTILS_TARGETS := aarch64-linux-gnu aarch64-linux-musl alpha-linux-gnu alpha-linux-musl arm-linux-gnueabi arm-linux-gnueabihf arm-linux-musl hppa-linux-gnu hppa-linux-musl i686-kfreebsd-gnu i686-linux-gnu i686-linux-musl ia64-linux-gnu ia64-linux-musl m68k-linux-gnu m68k-linux-musl mips64el-linux-gnuabi64 mips64el-linux-musl mipsel-linux-gnu mipsel-linux-musl powerpc-linux-gnu powerpc-linux-musl powerpc64-linux-gnu powerpc64-linux-musl powerpc64le-linux-gnu powerpc64le-linux-musl riscv64-linux-gnu riscv64-linux-musl s390x-linux-gnu s390x-linux-musl sh4-linux-gnu sh4-linux-musl sparc64-linux-gnu sparc64-linux-musl x86_64-linux-gnu x86_64-linux-musl powerpc-apple-darwin x86_64-apple-darwin i686-apple-darwin arm-apple-darwin aarch64-apple-darwin i686-hurd-gnu i686-elf x86_64-elf arm-none-eabi aarch64-elf riscv64-elf alpha-elf ia64-elf m68k-elf powerpc-elf powerpc64-elf powerpc64le-elf mips64el-elf hppa-elf s390x-elf sh4-elf sparc64-elf i686-unknown-haiku x86_64-unknown-haiku arm-unknown-haiku aarch64-unknown-haiku powerpc-freebsd powerpc64-freebsd powerpc64le-freebsd x86_64-freebsd i386-freebsd arm-freebsd aarch64-freebsd alpha-netbsd x86_64-netbsd arm-netbsd mips-netbsd powerpc-netbsd i386-netbsd sparc-netbsd sh3-netbsd m68k-netbsd hppa-netbsd vax-netbsd ia64-netbsd x86_64-dragonfly x86_64-sun-solaris sparc-sun-solaris alpha-dec-osf hppa-hp-hpux i486-beos i486-bsdi i586-pc-cygwin i386-ncr-sysv i386-pc-sco3 i386-UnixWare-sysv m68k-next-nextstep mips-sgi-irix powerpc-ibm-aix rs6000-ibm-aix sparc-unknown-bsdi
 
 BINUTILS_CONFARGS := --enable-obsolete \
 	--enable-shared \
@@ -49,8 +49,8 @@ endif
 			--build=$$($(BUILD_MISC)/config.guess) \
 			--host=$(GNU_HOST_TRIPLE) \
 			--prefix=$(MEMO_PREFIX)$(MEMO_SUB_PREFIX) \
-			--libdir=$(MEMO_PREFIX)$(MEMO_SUB_PREFIX)/$(GNU_HOST_TRIPLE)/$$target/lib \
-			--includedir=$(MEMO_PREFIX)$(MEMO_SUB_PREFIX)/$(GNU_HOST_TRIPLE)/$$target/include \
+			--libdir=$(MEMO_PREFIX)$(MEMO_SUB_PREFIX)/$(MEMO_TARGET)/$$target/lib \
+			--includedir=$(MEMO_PREFIX)$(MEMO_SUB_PREFIX)/$(MEMO_TARGET)/$$target/include \
 			--target=$$target \
 			$(BINUTILS_CONFARGS) $$binutils_extra_flags; \
 		$(MAKE) -C $(BUILD_WORK)/binutils/$$target; \
@@ -71,7 +71,7 @@ binutils-package: binutils-stage
 	
 	#  binutils.mk Prep binutils-*
 	for target in $(BINUTILS_TARGETS); do \
-		cp -r $(BUILD_STAGE)/binutils/$$target $(BUILD_DIST)/binutils-$$($(SED) -e 's/_/-/g' <<< "$$target"); \
+		cp -a $(BUILD_STAGE)/binutils/$$target $(BUILD_DIST)/binutils-$$($(SED) -e 's/_/-/g' <<< "$$target"); \
 		$(SED) -e "s/@TARGET@/$$($(SED) -e 's/_/-/g' <<< "$$target")/g" $(BUILD_INFO)/binutils.control.in > $(BUILD_INFO)/binutils-$$($(SED) -e 's/_/-/g' <<< "$$target").control; \
 	done
 	for target in $(BINUTILS_TARGETS); do \
@@ -82,7 +82,7 @@ binutils-package: binutils-stage
 			rm -rf $$pkg/$(MEMO_PREFIX)$(MEMO_SUB_PREFIX)/share/{locale,info}; \
 		done; \
 	done
-	cp -r $(BUILD_STAGE)/binutils/x86_64-linux-gnu/$(MEMO_PREFIX)$(MEMO_SUB_PREFIX)/share $(BUILD_DIST)/binutils-common/$(MEMO_PREFIX)$(MEMO_SUB_PREFIX)
+	cp -a $(BUILD_STAGE)/binutils/x86_64-linux-gnu/$(MEMO_PREFIX)$(MEMO_SUB_PREFIX)/share $(BUILD_DIST)/binutils-common/$(MEMO_PREFIX)$(MEMO_SUB_PREFIX)
 	for man in $(BUILD_DIST)/binutils-common/$(MEMO_PREFIX)$(MEMO_SUB_PREFIX)/share/man/man1/*; do \
 		mv $$man $(BUILD_DIST)/binutils-common/$(MEMO_PREFIX)$(MEMO_SUB_PREFIX)/share/man/man1/binutils-$$(basename $$man .1 | rev | cut -d- -f1 | rev ).1; \
 	done
@@ -92,7 +92,7 @@ binutils-package: binutils-stage
 	
 	# binutils.mk Sign
 	for target in $(BINUTILS_TARGETS); do \
-		$(call SIGN,binutils-$$target,general.xml);\
+		$(call SIGN,binutils-$$($(SED) -e 's/_/-/g' <<< "$(GNU_HOST_TRIPLE)"),general.xml);\
 	done
 	
 	# Make control files with:
