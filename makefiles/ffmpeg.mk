@@ -20,10 +20,7 @@ ffmpeg:
 else
 ffmpeg: ffmpeg-setup aom dav1d fontconfig freetype frei0r gnutls lame libass libsoxr libvidstab libvorbis libvpx libopencore-amr openjpeg libopus rav1e rtmpdump rubberband sdl2 libsnappy libspeex libsrt tesseract libtheora libwebp x264 x265 libxvidcore xz libzmq libxcb
 	cd $(BUILD_WORK)/ffmpeg && ./configure \
-<<<<<<< HEAD:ffmpeg.mk
-=======
 		--cross-prefix="$(GNU_HOST_TRIPLE)-" \
->>>>>>> 095d0f90c56d8f275c7931cbb4b66b540492ea64:makefiles/ffmpeg.mk
 		--prefix=$(MEMO_PREFIX)$(MEMO_SUB_PREFIX) \
 		--enable-shared \
 		--enable-pthreads \

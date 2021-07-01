@@ -3,20 +3,11 @@ $(error Use the main Makefile)
 endif
 
 SUBPROJECTS    += x264
-<<<<<<< HEAD:x264.mk
-X264_SOVERSION := 163
-X264_VERSION   := 0.$(X264_SOVERSION).3027+gitb684ebe
-DEB_X264_V     ?= $(X264_VERSION)
-
-X264_COMMIT    := b684ebe04a6f80f8207a57940a1fa00e25274f81
-
-=======
 X264_SOVERSION := 161
 X264_COMMIT    := 55d517bc4569272a2c9a367a4106c234aba2ffbc
 X264_VERSION   := 0.$(X264_SOVERSION).3049+git$(shell echo $(X264_COMMIT) | cut -c -7)
 DEB_X264_V     ?= $(X264_VERSION)
 
->>>>>>> 095d0f90c56d8f275c7931cbb4b66b540492ea64:makefiles/x264.mk
 x264-setup: setup
 #	Clones latest from the stable branch. Update version/commit on compile.
 	$(call GIT_CLONE,https://code.videolan.org/videolan/x264.git,stable,x264)
