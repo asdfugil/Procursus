@@ -1302,11 +1302,12 @@ rebuild-%:
 
 setup:
 	@mkdir -p \
-		$(BUILD_BASE) $(BUILD_BASE)$(MEMO_PREFIX)/{{,System}/Library/Frameworks,$(MEMO_SUB_PREFIX)/{include/{bsm,objc,os/internal,sys,firehose,CoreFoundation,FSEvents,IOKit/kext,libkern,kern,arm,{mach/,}machine,CommonCrypto,Security,CoreSymbolication,Kernel/{kern,IOKit,libkern},rpc,rpcsvc,xpc/private,ktrace,mach-o,dispatch},lib/pkgconfig,$(MEMO_ALT_PREFIX)/lib}} \
+		$(BUILD_BASE) $(BUILD_BASE)$(MEMO_PREFIX)/{{,System}/Library/Frameworks,$(MEMO_SUB_PREFIX)/{include/{bsm,objc,os/internal,sys,firehose,CoreFoundation,FSEvents,IOKit/kext,libkern,kern,arm,{mach/,}machine,corecrypto,CommonCrypto,Security,SecurityFoundation,TrustedPeers,LocalAuthentication,MobileKeyBag,CoreCDP,CoreSymbolication,Kernel/{kern,IOKit,libkern},rpc,rpcsvc,xpc/private,ktrace,mach-o,dispatch},lib/pkgconfig,$(MEMO_ALT_PREFIX)/lib}} \
 		$(BUILD_SOURCE) $(BUILD_WORK) $(BUILD_STAGE) $(BUILD_STRAP)
 
 	@rm -rf $(BUILD_BASE)/$(MEMO_PREFIX)$(MEMO_SUB_PREFIX)/include/System
 	@$(LN_SR) $(BUILD_BASE)/$(MEMO_PREFIX)$(MEMO_SUB_PREFIX)/include{,/System}
+	@$(LN_S) CommonCrypto $(BUILD_BASE)/$(MEMO_PREFIX)$(MEMO_SUB_PREFIX)/include/CommonNumerics
 
 	@$(call DOWNLOAD_FILES,$(BUILD_BASE)$(MEMO_PREFIX)$(MEMO_SUB_PREFIX)/include, \
 		https://github.com/apple-oss-distributions/xnu/raw/xnu-10002.1.13/libsyscall/wrappers/{spawn/spawn{$(comma)_private}$(comma)libproc/libproc{$(comma)_internal$(comma)_private}}.h \
@@ -1338,11 +1339,16 @@ setup:
 		https://github.com/apple-oss-distributions/xnu/raw/xnu-10002.1.13/bsd/machine/disklabel.h)
 
 	@$(call DOWNLOAD_FILES,$(BUILD_BASE)$(MEMO_PREFIX)$(MEMO_SUB_PREFIX)/include/os, \
-		https://github.com/apple-oss-distributions/Libc/raw/Libc-1583.0.14/os/assumes.h \
-		https://github.com/apple-oss-distributions/xnu/raw/xnu-10002.1.13/libkern/os/{base_private$(comma)log_private$(comma)log}.h)
+		https://github.com/apple-oss-distributions/Libc/raw/Libc-1583.0.14/os/{assumes$(comma)variant_private}.h \
+		https://github.com/apple-oss-distributions/xnu/raw/xnu-10002.1.13/libkern/os/{base_private$(comma)log_private$(comma)log}.h \
+		https://github.com/Torrekie/apple_internal_sdk/raw/2b42de07b77d3cd6269b4bc12b687a0bc6579d8a/usr/include/os/feature_private.h \
+		https://github.com/apple-oss-distributions/libplatform/raw/libplatform-126.1.2/include/os/lock_private.h)
 
 	@$(call DOWNLOAD_FILES,$(BUILD_BASE)$(MEMO_PREFIX)$(MEMO_SUB_PREFIX)/include/CommonCrypto, \
 		https://github.com/apple-oss-distributions/CommonCrypto/raw/CommonCrypto-600025/include/Private/CommonDigestSPI.h)
+
+	@$(call DOWNLOAD_FILES,$(BUILD_BASE)$(MEMO_PREFIX)$(MEMO_SUB_PREFIX)/include/CommonNumerics, \
+		https://github.com/apple-oss-distributions/CommonCrypto/raw/CommonCrypto-600025/include/Private/{CommonCRC$(comma)CommonNumerics}.h)
 
 	@$(call DOWNLOAD_FILES,$(BUILD_BASE)$(MEMO_PREFIX)$(MEMO_SUB_PREFIX)/include/bsm, \
 		https://github.com/apple-oss-distributions/xnu/raw/xnu-10002.1.13/bsd/bsm/audit_kevents.h)
@@ -1355,8 +1361,11 @@ setup:
 		https://github.com/apple-oss-distributions/Security/raw/Security-61040.1.3/OSX/libsecurity_codesigning/lib/Sec{CodeSigner$(comma){Code$(comma)Requirement}Priv}.h \
 		https://github.com/apple-oss-distributions/Security/raw/Security-61040.1.3/base/SecBasePriv.h)
 
+	@$(call DOWNLOAD_FILES,$(BUILD_BASE)$(MEMO_PREFIX)$(MEMO_SUB_PREFIX)/include/TrustedPeers, \
+		https://github.com/apple-oss-distributions/Security/raw/Security-58286.41.2/keychain/trust/TrustedPeers/{TP{CategoryRule$(comma)Circle$(comma)Decrypter$(comma)Encrypter$(comma)Hash$(comma)Model$(comma)Peer$(comma)PeerDynamicInfo$(comma)PeerPermanentInfo$(comma)PeerStableInfo$(comma)PolicyDocument$(comma)SigningKey$(comma)Types$(comma)Utils$(comma)Voucher}$(comma)TrustedPeers}.h)
+
 	@$(call DOWNLOAD_FILES,$(BUILD_BASE)$(MEMO_PREFIX)$(MEMO_SUB_PREFIX)/include/CoreFoundation, \
-		https://github.com/apple-oss-distributions/CF/raw/CF-1153.18/CFBundlePriv.h)
+		https://github.com/apple-oss-distributions/CF/raw/CF-1153.18/CF{BundlePriv$(comma)Runtime$(comma)Priv}.h)
 
 	@$(call DOWNLOAD_FILES,$(BUILD_BASE)$(MEMO_PREFIX)$(MEMO_SUB_PREFIX)/include/machine, \
 		https://github.com/apple-oss-distributions/xnu/raw/xnu-10002.1.13/osfmk/machine/cpu_capabilities.h)
@@ -1387,11 +1396,6 @@ setup:
 
 	@$(call DOWNLOAD_FILES,$(BUILD_BASE)$(MEMO_PREFIX)$(MEMO_SUB_PREFIX)/include/IOKit/kext, \
 		https://github.com/apple-oss-distributions/IOKitUser/raw/IOKitUser-100065.1.1/kext.subproj/{KextManagerPriv$(comma)OSKext$(comma)OSKextPrivate$(comma)kextmanager_types$(comma){fat$(comma)macho$(comma)misc}_util}.h)
-
-	@$(call DOWNLOAD_FILES,$(BUILD_BASE)$(MEMO_PREFIX)$(MEMO_SUB_PREFIX)/include/Security, \
-		https://github.com/apple-oss-distributions/Security/raw/Security-61040.1.3/OSX/libsecurity_keychain/lib/SecKeychainPriv.h \
-		https://github.com/apple-oss-distributions/Security/raw/Security-61040.1.3/OSX/libsecurity_codesigning/lib/Sec{CodeSigner$(comma){Code$(comma)Requirement}Priv}.h \
-		https://github.com/apple-oss-distributions/Security/raw/Security-61040.1.3/base/SecBasePriv.h)
 
 	@$(call DOWNLOAD_FILES,$(BUILD_BASE)$(MEMO_PREFIX)$(MEMO_SUB_PREFIX)/include/CoreFoundation, \
 		https://github.com/apple-oss-distributions/CF/raw/CF-1153.18/CFBundlePriv.h)
@@ -1427,6 +1431,10 @@ setup:
 	@$(call DOWNLOAD_FILES,$(BUILD_BASE)$(MEMO_PREFIX)$(MEMO_SUB_PREFIX)/include/dispatch, \
 		https://github.com/apple-oss-distributions/libdispatch/raw/libdispatch-1462.0.4/private/{private$(comma)benchmark$(comma){apply$(comma)channel$(comma)data$(comma)introspection$(comma)io$(comma)layout$(comma)mach$(comma)queue$(comma)source$(comma)time$(comma)workloop}_private}.h)
 
+	@$(call DOWNLOAD_FILES,$(BUILD_BASE)$(MEMO_PREFIX)$(MEMO_SUB_PREFIX)/include/corecrypto, \
+		https://github.com/apple-oss-distributions/xnu/raw/xnu-10002.1.13/EXTERNAL_HEADERS/corecrypto/{fipspost_trace$(comma)cc{$(comma){aes$(comma)asn1$(comma)cmac$(comma)der$(comma)der_blob$(comma)des$(comma)digest$(comma)digest_priv$(comma)drbg$(comma)drbg_impl$(comma)entropy$(comma)hmac$(comma)kprng$(comma)md4$(comma)mode$(comma)mode_impl$(comma)mode_siv$(comma)mode_siv_hmac$(comma)n$(comma)pad$(comma)rng$(comma)rng_crypto$(comma)rng_fortuna$(comma)rng_schedule$(comma)rsa$(comma)sha1$(comma)sha2$(comma)zp}$(comma)_{config$(comma)error$(comma)fault_canary$(comma)impl$(comma)lock$(comma)macros$(comma)priv$(comma)runtime_config}}}.h \
+		https://github.com/Torrekie/apple_internal_sdk/raw/de8abe198c04079fdb11695cf6bfaf8a29e432ad/usr/include/corecrypto/cc{ec$(comma)rng_pbkdf2_prng$(comma)pbkdf2}.h)
+
 	@cp -a $(BUILD_MISC)/{libxml-2.0,zlib}.pc $(BUILD_BASE)/$(MEMO_PREFIX)$(MEMO_SUB_PREFIX)/lib/pkgconfig
 
 ifeq ($(shell [ "$(CFVER_WHOLE)" -ge 1700 ] && echo 1),1)
@@ -1453,7 +1461,8 @@ ifeq (,$(findstring darwin,$(MEMO_TARGET)))
 	@cp -af $(MACOSX_SYSROOT)/usr/include/sys/{tty*,ptrace,kern*,random,reboot,user,vnode,disk,vmmeter,conf}.h $(BUILD_BASE)/$(MEMO_PREFIX)$(MEMO_SUB_PREFIX)/include/sys
 	@cp -af  $(MACOSX_SYSROOT)/System/Library/Frameworks/Kernel.framework/Versions/Current/Headers/sys/disklabel.h $(BUILD_BASE)/$(MEMO_PREFIX)$(MEMO_SUB_PREFIX)/include/sys
 	@cp -af $(MACOSX_SYSROOT)/System/Library/Frameworks/IOKit.framework/Headers/* $(BUILD_BASE)/$(MEMO_PREFIX)$(MEMO_SUB_PREFIX)/include/IOKit
-	@cp -af $(MACOSX_SYSROOT)/System/Library/Frameworks/Security.framework/Headers/{mds_schema,oidsalg,SecKeychainSearch,certextensions,Authorization,eisl,SecDigestTransform,SecKeychainItem,oidscrl,cssmcspi,CSCommon,cssmaci,SecCode,CMSDecoder,oidscert,SecRequirement,AuthSession,SecReadTransform,oids,cssmconfig,cssmkrapi,SecPolicySearch,SecAccess,cssmtpi,SecACL,SecEncryptTransform,cssmapi,cssmcli,mds,x509defs,oidsbase,SecSignVerifyTransform,cssmspi,cssmkrspi,SecTask,cssmdli,SecAsn1Coder,cssm,SecTrustedApplication,SecCodeHost,SecCustomTransform,oidsattr,SecIdentitySearch,cssmtype,SecAsn1Types,emmtype,SecTransform,SecTrustSettings,SecStaticCode,emmspi,SecTransformReadTransform,SecKeychain,SecDecodeTransform,CodeSigning,AuthorizationPlugin,cssmerr,AuthorizationTags,CMSEncoder,SecEncodeTransform,SecureDownload,SecAsn1Templates,AuthorizationDB,SecCertificateOIDs,cssmapple}.h $(BUILD_BASE)/$(MEMO_PREFIX)$(MEMO_SUB_PREFIX)/include/Security
+	@cp -af $(MACOSX_SYSROOT)/System/Library/Frameworks/SecurityFoundation.framework/Headers/* $(BUILD_BASE)/$(MEMO_PREFIX)$(MEMO_SUB_PREFIX)/include/SecurityFoundation
+	@cp -af $(MACOSX_SYSROOT)/System/Library/Frameworks/Security.framework/Headers/{mds_schema,oidsalg,SecKeychainSearch,certextensions,Authorization,eisl,SecDigestTransform,SecKeychainItem,oidscrl,cssmcspi,CSCommon,cssmaci,SecCode,CMSDecoder,oidscert,SecRequirement,AuthSession,SecReadTransform,oids,cssmconfig,cssmkrapi,SecPolicy,SecPolicySearch,SecAccess,cssmtpi,SecACL,SecEncryptTransform,cssmapi,cssmcli,mds,x509defs,oidsbase,SecSignVerifyTransform,cssmspi,cssmkrspi,SecTask,cssmdli,SecAsn1Coder,cssm,SecTrust,SecTrustedApplication,SecCodeHost,SecCustomTransform,oidsattr,SecIdentity,SecIdentitySearch,cssmtype,SecAsn1Types,emmtype,SecTransform,SecTrustSettings,SecStaticCode,emmspi,SecTransformReadTransform,SecKeychain,SecDecodeTransform,CodeSigning,AuthorizationPlugin,cssmerr,AuthorizationTags,CMSEncoder,SecEncodeTransform,SecureDownload,SecAsn1Templates,AuthorizationDB,SecCertificateOIDs,cssmapple}.h $(BUILD_BASE)/$(MEMO_PREFIX)$(MEMO_SUB_PREFIX)/include/Security
 	@cp -af $(MACOSX_SYSROOT)/usr/include/{ar,bootstrap,launch,libc,libcharset,localcharset,nlist,NSSystemDirectories,tzfile,vproc}.h $(BUILD_BASE)/$(MEMO_PREFIX)$(MEMO_SUB_PREFIX)/include
 	@cp -af $(MACOSX_SYSROOT)/usr/include/mach/{*.defs,{mach_vm,shared_region}.h} $(BUILD_BASE)/$(MEMO_PREFIX)$(MEMO_SUB_PREFIX)/include/mach
 	@cp -af $(MACOSX_SYSROOT)/usr/include/mach/machine/*.defs $(BUILD_BASE)/$(MEMO_PREFIX)$(MEMO_SUB_PREFIX)/include/mach/machine
@@ -1468,6 +1477,12 @@ endif
 
 	@mkdir -p $(BUILD_BASE)$(MEMO_PREFIX)$(MEMO_SUB_PREFIX)/include/{CoreAudio,CoreFoundation}
 	@cp -af $(MACOSX_SYSROOT)/System/Library/Frameworks/CoreAudio.framework/Headers/* $(BUILD_BASE)$(MEMO_PREFIX)$(MEMO_SUB_PREFIX)/include/CoreAudio
+	@cp -af $(BUILD_MISC)/Security/{libaks,libaks_acl_cf_keys,ACMDefs,ACMAclDefs}.h $(BUILD_BASE)$(MEMO_PREFIX)$(MEMO_SUB_PREFIX)/include
+	@cp -af $(BUILD_MISC)/Security/TP{Policy,PolicyVersion,PolicyDocument,SyncingPolicy}.h $(BUILD_BASE)$(MEMO_PREFIX)$(MEMO_SUB_PREFIX)/include/TrustedPeers
+	@cp -af $(BUILD_MISC)/Security/CFXPCBridge.h $(BUILD_BASE)$(MEMO_PREFIX)$(MEMO_SUB_PREFIX)/include/CoreFoundation
+	@cp -af $(BUILD_MISC)/PrivateFrameworks/CoreCDP.framework/*.h $(BUILD_BASE)$(MEMO_PREFIX)$(MEMO_SUB_PREFIX)/include/CoreCDP
+	@cp -af $(BUILD_MISC)/PrivateFrameworks/MobileKeyBag.framework/*.h $(BUILD_BASE)$(MEMO_PREFIX)$(MEMO_SUB_PREFIX)/include/MobileKeyBag
+	@cp -af $(BUILD_MISC)/Security/LAContext+Private.h $(BUILD_BASE)$(MEMO_PREFIX)$(MEMO_SUB_PREFIX)/include/LocalAuthentication
 
 	@# Patch headers from $(BARE_PLATFORM).sdk
 	@if [ -f $(TARGET_SYSROOT)/System/Library/Frameworks/CoreFoundation.framework/Headers/CFUserNotification.h ]; then sed -E 's/API_UNAVAILABLE(ios, watchos, tvos)//g' < $(TARGET_SYSROOT)/System/Library/Frameworks/CoreFoundation.framework/Headers/CFUserNotification.h > $(BUILD_BASE)$(MEMO_PREFIX)$(MEMO_SUB_PREFIX)/include/CoreFoundation/CFUserNotification.h; fi
@@ -1486,11 +1501,14 @@ endif
 
 	@#Patch downloaded headers
 	@sed -i '1s|^|#include <Security/cssmapi.h>\n#include <Security/SecKeychain.h>\n|' $(BUILD_BASE)$(MEMO_PREFIX)$(MEMO_SUB_PREFIX)/include/Security/SecKeychainPriv.h
-	@sed -i '1s|^|#include <arm/cpu_capabilities.h>\n|' $(BUILD_BASE)$(MEMO_PREFIX)$(MEMO_SUB_PREFIX)/include/firehose/tracepoint_private.h
+	@sed -i '1s|^|#include <machine/cpu_capabilities.h>\n|' $(BUILD_BASE)$(MEMO_PREFIX)$(MEMO_SUB_PREFIX)/include/firehose/tracepoint_private.h
 	@sed -i -e 's/__osloglike([0-9], [0-9])//' -e 's|extern void \*__dso_handle;|#ifndef __OS_TRACE_BASE_H__\nextern struct mach_header __dso_handle;\n#endif|' $(BUILD_BASE)$(MEMO_PREFIX)$(MEMO_SUB_PREFIX)/include/os/log{,_private}.h
 	@sed -i 's/, ios(NA), bridgeos(NA)//' $(BUILD_BASE)$(MEMO_PREFIX)$(MEMO_SUB_PREFIX)/include/Security/SecBasePriv.h
 	@sed -i 's/__API_UNAVAILABLE(ios, tvos, watchos) __API_UNAVAILABLE(bridgeos)//' $(BUILD_BASE)$(MEMO_PREFIX)$(MEMO_SUB_PREFIX)/include/mach-o/dyld_process_info.h
 	@sed -i 's|This header file describes INTERNAL interfaces|*/\n#define __API_AVAILABLE_PLATFORM_bridgeos(x) bridgeos,introduced=x\n/*|' $(BUILD_BASE)$(MEMO_PREFIX)$(MEMO_SUB_PREFIX)/include/dispatch/{mach,data,source}_private.h
+	@sed -i '1s|^|#define __API_AVAILABLE_PLATFORM_bridgeos(x) bridgeos,introduced=x\n|' $(BUILD_BASE)$(MEMO_PREFIX)$(MEMO_SUB_PREFIX)/include/{dispatch/{mach,data,source}_private,os/variant_private}.h
+	@sed -i 's/__OSX_AVAILABLE_STARTING(.*);/;/g' $(BUILD_BASE)$(MEMO_PREFIX)$(MEMO_SUB_PREFIX)/include/os/feature_private.h
+	@sed -i -e '/os_unfair_lock_assert_not_owner/d' -e '/os_unfair_lock_assert_owner/d' $(BUILD_BASE)$(MEMO_PREFIX)$(MEMO_SUB_PREFIX)/include/os/lock_private.h
 
 	@# Setup libiosexec
 	@cp -af $(BUILD_MISC)/libiosexec/libiosexec.h $(BUILD_BASE)/$(MEMO_PREFIX)$(MEMO_SUB_PREFIX)/include

@@ -1,0 +1,49 @@
+--- !tapi-tbd
+tbd-version:     4
+targets:         [ arm64-ios, arm64e-ios, arm64-tvos, arm64e-tvos, arm64_32-watchos, arm64-bridgeos ]
+uuids:
+  - target:          arm64-ios
+    value:           6c74c6f7-66e8-4541-81ff-88b757d25f45
+  - target:          arm64e-ios
+    value:           be69c7ac-8084-48ea-a23f-5ac5edb298bf
+  - target:          arm64-tvos
+    value:           c5732767-b90f-4d49-bdda-7b51ac0ba867
+  - target:          arm64e-tvos
+    value:           78cd1502-930f-4771-bcc2-1a38ee438978
+  - target:          arm64_32-watchos
+    value:           314584a4-4209-4e93-a295-083076ea69ca
+  - target:          arm64-bridgeos
+    value:           d54cb8f4-7ced-4902-ac3a-a8af89f97cf5
+install-name:    '/System/Library/PrivateFrameworks/CoreCDP.framework/CoreCDP'
+exports:
+  - targets:         [ arm64-ios ]
+    symbols:         [ _CDPAuthProviderExportedInterface, _CDPCloudDataProtectionEnabledNotification, 
+                       _CDPDaemonExportedInterface, _CDPDeviceClassToLocKey, _CDPFMIPRecoveryKey, 
+                       _CDPIDMSPasswordResetKey, _CDPIDMSRecordMIDKey, _CDPLocalizedString, 
+                       _CDPManateeAvailabilityNotification, _CDPManateeAvailabilityStateKey, 
+                       _CDPStateErrorDomain, _CDPUIProviderExportedInterface, _CDPUnqualifiedDeviceClassToLocKey, 
+                       _CDP_FOLLOWUP_CONFIRM_EXISTING_SECRET, _CDP_FOLLOWUP_OFFLINE_PASSCODE, 
+                       _CDP_FOLLOWUP_RECOVERY_KEY_REGEN, _CDP_FOLLOWUP_SECURE_TERMS, 
+                       _CDP_FOLLOWUP_SETUP_BIOMETIRCS, _CDP_FOLLOWUP_STATE_REPAIR, 
+                       _CoreCDPVersionNumber, _CoreCDPVersionString, __CDPLogSystem, 
+                       __CDPSignpostCreate, __CDPSignpostGetNanoseconds, __CDPSignpostLogSystem, 
+                       __CDPStateError, __CDPStateErrorWithUnderlying, __CDPSuffixForDeviceClass, 
+                       __CDPSuffixForSecretType, __CDPSuffixForUnqualifiedDeviceClass ]
+    objc-classes:    [ CDPAccount, CDPAuthProviderProxy, CDPCircleProxyImpl, CDPContext, 
+                       CDPController, CDPCustodianRecoveryInfo, CDPCustodianRecoveryKeyController, 
+                       CDPDaemonConnection, CDPDataPrivacyController, CDPDevice, 
+                       CDPFollowUpContext, CDPFollowUpController, CDPInheritanceTrustController, 
+                       CDPKeychainSync, CDPLocalDevice, CDPLocalDeviceSecretHandler, 
+                       CDPLocalDeviceSecretProxyImpl, CDPLocalSecret, CDPLocalizedStringBuilder, 
+                       CDPManateeStateController, CDPPCSUtilities, CDPProtectedCloudStorageProxyImpl, 
+                       CDPRecoveryController, CDPRecoveryKeyValidatorProxyImpl, CDPRemoteDeviceSecretValidator, 
+                       CDPStateController, CDPStateUIProviderProxy, CDPTermsInfoBackupController, 
+                       CDPToolFakeUIProvider, CDPUpdateDataPrivacyContext, CDPUtilities ]
+    objc-ivars:      [ CDPDevice._deviceColor, CDPDevice._enclosureColor, CDPDevice._hasNumericSecret, 
+                       CDPDevice._hasRandomSecret, CDPDevice._isCurrentDevice, CDPDevice._isUsingMultipleiCSC, 
+                       CDPDevice._localizedName, CDPDevice._machineID, CDPDevice._model, 
+                       CDPDevice._modelClass, CDPDevice._modelVersion, CDPDevice._numericSecretLength, 
+                       CDPDevice._platform, CDPDevice._recordDate, CDPDevice._recordID, 
+                       CDPDevice._recordInfo, CDPDevice._remainingAttempts, CDPDevice._serialNumber, 
+                       CDPDevice._simplePublicKey ]
+...
