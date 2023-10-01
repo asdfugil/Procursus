@@ -4,6 +4,6 @@
 #include <LocalAuthentication/LAError.h>
 #include <LocalAuthentication/LAContext.h>
 
-#define LACredentialTypePasscode -4
+#define LACredentialTypePasscode 0
 
 #endif
