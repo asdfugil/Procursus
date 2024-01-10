@@ -6,6 +6,7 @@
 #include <mach/mach.h>
 #include <mach/error.h>
 #include <IOKit/IOReturn.h>
+#include <MobileKeyBag/MobileKeyBag.h>
 
 #define kAKSReturnSuccess	KERN_SUCCESS
 #define kAKSReturnError		kIOReturnError
