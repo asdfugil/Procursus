@@ -69,7 +69,7 @@ security-package: security-stage
 	cp -a $(BUILD_STAGE)/security $(BUILD_DIST)
 
 	# security.mk Sign
-	$(call SIGN,security,security.xml)
+	$(LDID) -Icom.apple.security -S$(BUILD_MISC)/entitlements/security.xml $(BUILD_DIST)/security/$(MEMO_PREFIX)$(MEMO_SUB_PREFIX)/bin/security
 
 	# security.mk Make .debs
 	$(call PACK,security,DEB_SECURITY_V)

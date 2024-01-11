@@ -1417,7 +1417,7 @@ setup:
 		https://github.com/apple-oss-distributions/xnu/raw/xnu-10002.1.13/bsd/sys/{fcntl$(comma)fsctl$(comma)spawn_internal$(comma)resource$(comma)event$(comma)kdebug$(comma)proc$(comma)proc_info$(comma)pgo$(comma)proc_uuid_policy$(comma)acct$(comma)stackshot$(comma)event$(comma)mbuf$(comma)kern_memorystatus$(comma)reason}.h)
 
 	@$(call DOWNLOAD_FILES,$(BUILD_BASE)$(MEMO_PREFIX)$(MEMO_SUB_PREFIX)/include/xpc, \
-		https://github.com/Torrekie/apple_internal_sdk/raw/322eb6573bc701e7f35af05650b0cc162d0355c1/usr/include/xpc/private.h)
+		https://github.com/Torrekie/apple_internal_sdk/raw/5d2717bad981dbd0af257f50db261d7efe754de0/usr/include/xpc/private.h)
 
 	@$(call DOWNLOAD_FILES,$(BUILD_BASE)$(MEMO_PREFIX)$(MEMO_SUB_PREFIX)/include/ktrace, \
 		https://github.com/Torrekie/apple_internal_sdk/raw/fa5457b4e5246d20da5a74f1449b37dfd79f1248/usr/include/ktrace/{private$(comma)session}.h)
