@@ -12,6 +12,10 @@ ifeq ($(shell [ "$(CFVER_WHOLE)" -lt 1900 ] && echo 1),1)
 SECURITY_LDFLAGS := $(BUILD_MISC)/security/stubs.c $(BUILD_MISC)/Security/libellekit.tbd
 SECURITY_LDFLAGS += -rpath $(MEMO_PREFIX)/Library/Frameworks -rpath /cores/binpack/Library/Frameworks
 SECURITY_LDFLAGS += -rpath $(MEMO_PREFIX)/basebin/fallback -rpath /binpack/Library/Frameworks
+ifneq ($(MEMO_PREFIX),)
+SECURITY_LDFLAGS += -rpath /Library/Frameworks
+endif
+
 else
 SECURITY_LDFLAGS := -framework AppleKeyStore OSX/sec/ipc/client.c featureflags/featureflags.c
 SECURITY_LDFLAGS += OSX/utilities/SecFileLocations.c
