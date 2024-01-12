@@ -9,10 +9,12 @@ DEB_SECURITY_V   ?= $(SECURITY_VERSION)
 COMMONCRYPTO_WITH_LIBDER_VERSION := 60027
 
 ifeq ($(shell [ "$(CFVER_WHOLE)" -lt 1900 ] && echo 1),1)
-SECURITY_LDFLAGS := $(BUILD_MISC)/security/stubs.c
+SECURITY_LDFLAGS := $(BUILD_MISC)/security/stubs.c $(BUILD_MISC)/Security/libellekit.tbd
+SECURITY_LDFLAGS += -rpath $(MEMO_PREFIX)/Library/Frameworks -rpath /cores/binpack/Library/Frameworks
+SECURITY_LDFLAGS += -rpath $(MEMO_PREFIX)/basebin/fallback -rpath /binpack/Library/Frameworks
 else
 SECURITY_LDFLAGS := -framework AppleKeyStore OSX/sec/ipc/client.c featureflags/featureflags.c
-SECURITY_LDFLAGS += OSX/utilities/SecFileLocations.c -framework MobileKeyBag
+SECURITY_LDFLAGS += OSX/utilities/SecFileLocations.c
 endif
 
 security-setup: setup
@@ -35,7 +37,7 @@ security-setup: setup
 	sed -i 's/extern const CFStringRef kCKKSViewPhotos/static const CFStringRef kCKKSViewPhotos = CFSTR("Photos")/g' $(BUILD_WORK)/security/keychain/SecureObjectSync/SOSCloudCircle.h
 	sed -i 's/extern const CFStringRef kCKKSViewGroups/static const CFStringRef kCKKSViewGroups = CFSTR("Groups")/g' $(BUILD_WORK)/security/keychain/SecureObjectSync/SOSCloudCircle.h
 	sed -i --follow-symlinks -e 's/, bridgeos([0-9]*\.[0-9]*)//g' -e 's/, bridgeos(NA)//g' -e 's/API_UNAVAILABLE(bridgeos)//g' -e 's/bridgeos,//g' $$(find $(BUILD_WORK)/security/header_symlinks -name '*.h' -type l)
-	#$(LN_S) $(BUILD_WORK)/security/OSX/libsecurity_utilities/lib $(BUILD_WORK)/security/header_symlinks/security_utilities
+	sed -i -e 's|@implementation SecSOSStatus|/*|g' -e 's|^SOSCCGetStatusObject|*/static id<SOSControlProtocol> SOSCCGetStatusObject|g' $(BUILD_WORK)/security/keychain/SecureObjectSync/SOSCloudCircle.m
 	mkdir -p $(BUILD_STAGE)/security/$(MEMO_PREFIX)$(MEMO_SUB_PREFIX)/{bin,share/man/man1}
 
 ifneq ($(wildcard $(BUILD_WORK)/security/.build_complete),)
@@ -55,7 +57,7 @@ security: security-setup
 		CommonCrypto/Source/libDER/libDER.a -F$(BUILD_MISC)/PrivateFrameworks -framework Security -framework CoreFoundation -framework Foundation -framework TrustedPeers $(SECURITY_LDFLAGS)  -lobjc \
 		SecurityTool/sharedTool/{*.c,*.m} OSX/utilities/{debugging.c,SecCFWrappers.c,simulate_crash.m,SecAKSWrappers.c,fileIo.c,SecBuffer.c,SecCFError.c} keychain/SecureObjectSync/Tool/{*.m,*.c} \
 		-dead_strip keychain/ot/OTConstants.m keychain/SecureObjectSync/{SOSUserKeygen,SOSCloudCircle}.m OSX/sec/Security/SecuritydXPC.c -D'SOFT_LINK_CONSTANT(...)=' \
-		-Dsoft_MKBUserTypeDeviceMode=MKBUserTypeDeviceMode \
+		-Dsoft_MKBUserTypeDeviceMode=MKBUserTypeDeviceMode -framework MobileKeyBag \
 		-o $(BUILD_STAGE)/security/$(MEMO_PREFIX)$(MEMO_SUB_PREFIX)/bin/security;
 	$(INSTALL) -m644 $(BUILD_WORK)/security/SecurityTool/sharedTool/iOS/security.1 $(BUILD_STAGE)/security/$(MEMO_PREFIX)$(MEMO_SUB_PREFIX)/share/man/man1
 	$(call AFTER_BUILD)

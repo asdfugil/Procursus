@@ -3,4 +3,5 @@ Version: @DEB_SECURITY_V@
 Architecture: @DEB_ARCH@
 Maintainer: @DEB_MAINTAINER@
 Section: Utilities
+Recommends: firmware (>= 16.0) | mobilesubstrate
 Description: command line interface to Security.framework and keychains
