@@ -1,3 +1,4 @@
+ifeq (1,0)
 ifneq ($(PROCURSUS),1)
 $(error Use the main Makefile)
 endif
@@ -56,3 +57,4 @@ libxcrypt-package: libxcrypt-stage
 	rm -rf $(BUILD_DIST)/libcrypt{2,-dev}
 
 .PHONY: libxcrypt libxcrypt-package
+endif
